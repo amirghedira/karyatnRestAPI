@@ -4,8 +4,9 @@ const jwt = require('jsonwebtoken')
 
 
 exports.addClient = (req, res, next) => {
-    Client.findOne({ $or: [{ ncin: req.body.ncin }, { username: req.body.username }] })
+
     const urls = req.files.map(file => { return file.secure_url })
+    Client.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
         .exec()
         .then(client => {
             if (client)
@@ -25,10 +26,11 @@ exports.addClient = (req, res, next) => {
                             licencenum: req.body.licencenum,
                             birthday: req.body.birthday,
                             address: req.body.address,
-                            profileimg: urls[1],
+                            profileimg: urls[0],
                             backgroundimg: null,
-                            ncinimg: urls[0],
+                            ncinimg: urls[1],
                             joindate: new Date(),
+                            agencename: req.body.agencename,
                             phonenum: req.body.phonenum
                         })
                         client.save()
@@ -36,6 +38,7 @@ exports.addClient = (req, res, next) => {
                                 res.status(200).json({ message: 'Client successfully added' })
                             })
                             .catch(err => {
+
                                 res.status(500).json({ message: err })
                             })
                     })
@@ -150,4 +153,17 @@ exports.getClientbyUsername = (req, res, next) => {
 
         })
 
+}
+
+exports.deleteClient = (req, res) => {
+
+    Client.deleteOne({ _id: req.params.id })
+        .exec()
+        .then(result => {
+            res.status(200).json({ message: 'done' })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
 }

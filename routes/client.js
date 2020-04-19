@@ -7,14 +7,13 @@ const CheckAuth = require('../middelware/checkAuth')
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
-
 router.get('/', ClientController.getClients);
-
 router.get('/bytoken', CheckAuth, ClientController.getClientbyToken)
 router.get('/username/:username', ClientController.getClientbyUsername)
 router.get('/:ncin', ClientController.getClient);
 router.post('/', cloudinary.parser.array('clientimages', 3), ClientController.addClient);
 router.post('/login', ClientController.clientLogin);
+router.delete('/:id', ClientController.deleteClient);
 
 
 

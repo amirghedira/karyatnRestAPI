@@ -6,7 +6,6 @@ exports.addLocation = (req, res, next) => {
 
     Car.findOne({ carnumber: req.body.carnumber })
         .then(car => {
-            console.log(car)
             if (car) {
                 if (car.state) {
                     const date = new Date().toISOString();
