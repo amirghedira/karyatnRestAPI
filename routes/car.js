@@ -5,10 +5,15 @@ const cloudinary = require('../middelware/cloudinary')
 const checkAuth = require('../middelware/checkAuth')
 
 
+router.get('/car', CarControllers.getallcars)
+
+router.delete('/delete/:id', CarControllers.deleteForme)
 
 router.get('/', checkAuth, CarControllers.getCars);
 
-router.post('/freecar/:carnumber', checkAuth, CarControllers.toFreeCar);
+router.patch('/clearcar/:id', CarControllers.clearClientcars)
+
+router.patch('/freecar/:carnumber', checkAuth, CarControllers.toFreeCar);
 
 router.post('/', checkAuth, cloudinary.parser.single('carimage'), CarControllers.addCar);
 
@@ -19,11 +24,12 @@ router.get('/rentedcars', checkAuth, CarControllers.getRentedCars);
 router.get('/history', CarControllers.getCarHistory)
 
 
-router.get('/:carnumber', CarControllers.getCar);
+router.get('/:id', CarControllers.getCar);
 
 router.get('/carcount/:ncinowner', CarControllers.getCarsCount)
 
-router.delete('/:id', CarControllers.deleteCar);
+router.delete('/:id', checkAuth, CarControllers.deleteCar);
+
 
 
 

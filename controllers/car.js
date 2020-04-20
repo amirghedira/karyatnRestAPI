@@ -2,6 +2,9 @@ const Car = require('../models/Car');
 const Rent = require('../models/Rent')
 const Client = require('../models/Client')
 
+
+
+
 exports.addCar = (req, res) => {
     Car.findOne({ carnumber: req.body.carnumber })
         .exec()
@@ -69,6 +72,16 @@ exports.getFreeCars = (req, res, next) => {
 
 }
 
+exports.getallcars = (req, res) => {
+    Car.find()
+        .exec()
+        .then(cars => {
+            res.status(200).json({ cars: cars })
+        })
+        .catch(erre => {
+            console.log(erre)
+        })
+}
 exports.getCars = (req, res, next) => {
     Client.findOne({ username: req.user.username })
         .populate('cars')
@@ -80,10 +93,11 @@ exports.getCars = (req, res, next) => {
             res.status(500).json({ message: err })
 
         })
+
 }
 exports.getCar = (req, res, next) => {
 
-    Car.findOne({ carnumber: req.params.carnumber })
+    Car.findOne({ _id: req.params.id })
         .exec()
         .then(car => {
             res.status(200).json({ car: car })
@@ -129,19 +143,79 @@ exports.updateState = (req, res, next) => {
         })
 }
 
+exports.clearClientcars = (req, res) => {
 
-
-exports.deleteCar = (req, res, next) => {
-
-    Car.deleteOne({ _id: req.params.id })
+    Client.updateOne({ _id: req.params.id }, { $set: { cars: [] } })
         .exec()
         .then(result => {
-            res.status(200).json({ message: 'Car deleted successfully' })
+            res.status(200).json({ message: 'done' })
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json({ message: err })
 
         })
+
+}
+
+exports.deleteForme = (req, res, next) => {
+    Car.deleteOne({ _id: req.params.id })
+        .exec()
+        .then(result => {
+            res.status(200).json('done')
+
+        })
+        .catch(err => {
+            res.status(500).json('eroor')
+        })
+}
+
+exports.deleteCar = (req, res, next) => {
+
+    Client.findOne({ username: req.user.username })
+        .exec()
+        .then(client => {
+            if (client.cars.includes(req.params.id)) {
+                const index = client.cars.findIndex(carid => { return carid.toString() === req.params.id })
+                console.log(index)
+                if (index >= 0) {
+                    client.cars.splice(index, 1)
+                    client.save()
+                        .then(resultsave => {
+
+                            Car.deleteOne({ _id: req.params.id })
+                                .exec()
+                                .then(result => {
+                                    console.log(result)
+                                    res.status(200).json({ message: result })
+                                })
+                                .catch(err => {
+                                    console.log(err)
+                                    res.status(500).json({ message: err })
+
+                                })
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(500).json({ message: err })
+
+                        })
+                }
+
+
+            }
+            else {
+
+                res.status(404).json({ message: 'car not found' })
+            }
+
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ message: err })
+
+        })
+
 }
 
 

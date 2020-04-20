@@ -9,7 +9,6 @@ const ClientSchema = new mongoose.Schema({
     access: { type: String, required: true },
     name: { type: String, required: true },
     surname: { type: String, required: true },
-    age: { type: Number, required: true },
     licencenum: { type: String },
     birthday: { type: String, required: true },
     address: { type: String, required: true },
