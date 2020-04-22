@@ -5,7 +5,7 @@ const cloudinary = require('../middelware/cloudinary')
 const checkAuth = require('../middelware/checkAuth')
 
 
-router.get('/car', CarControllers.getallcars)
+router.get('/allcars', CarControllers.getallcars)
 
 router.delete('/delete/:id', CarControllers.deleteForme)
 
