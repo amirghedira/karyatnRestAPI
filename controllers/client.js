@@ -64,6 +64,17 @@ exports.getClients = (req, res) => {
 
         })
 }
+exports.getClientsWithCars = (req, res) => {
+    Client.find({ access: 'a' })
+        .populate('cars')
+        .then(clients => {
+            res.status(200).json({ cliens: clients })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
+}
 
 exports.getClient = (req, res) => {
 
