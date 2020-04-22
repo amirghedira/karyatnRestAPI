@@ -167,3 +167,38 @@ exports.deleteClient = (req, res) => {
 
         })
 }
+
+exports.getClientInformations = (req, res) => {
+
+    let info = {};
+    Client.findOne({ username: req.user.username })
+        .then(client => {
+            info.carscount = client.cars.length;
+            info.clientscount = client.clients.length
+            res.status(200).json({ info: info })
+
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
+
+}
+
+exports.updateClient = (req, res) => {
+
+    let ops = {};
+    for (let obj of req.body) {
+        ops[obj.propName] = obj.value
+    }
+    Client.updateOne({ username: req.user.username }, { $set: ops })
+        .exec()
+        .then(result => {
+            res.status(200).json({ message: 'Client successfully updated' })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
+
+}

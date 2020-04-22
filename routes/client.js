@@ -10,9 +10,11 @@ router.use(bodyParser.urlencoded({ extended: true }))
 router.get('/', ClientController.getClients);
 router.get('/bytoken', CheckAuth, ClientController.getClientbyToken)
 router.get('/username/:username', ClientController.getClientbyUsername)
+router.get('/informations', CheckAuth, ClientController.getClientInformations)
 router.get('/:ncin', ClientController.getClient);
 router.post('/', cloudinary.parser.array('clientimages', 3), ClientController.addClient);
 router.post('/login', ClientController.clientLogin);
+router.patch('/', ClientController.updateClient);
 router.delete('/:id', ClientController.deleteClient);
 
 
