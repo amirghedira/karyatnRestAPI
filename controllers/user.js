@@ -1,20 +1,20 @@
-const Client = require('../models/Client');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
 
-exports.addClient = (req, res, next) => {
+exports.addUser = (req, res, next) => {
 
     const urls = req.files.map(file => { return file.secure_url })
-    Client.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
+    User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
         .exec()
-        .then(client => {
-            if (client)
-                res.status(409).json({ message: 'Client already exists' })
+        .then(user => {
+            if (user)
+                res.status(409).json({ message: 'user already exists' })
             else {
                 bcrypt.hash(req.body.password, 11)
                     .then(password => {
-                        const client = new Client({
+                        const user = new User({
                             ncin: req.body.ncin,
                             username: req.body.username,
                             password: password,
@@ -33,9 +33,9 @@ exports.addClient = (req, res, next) => {
                             agencename: req.body.agencename,
                             phonenum: req.body.phonenum
                         })
-                        client.save()
+                        user.save()
                             .then(result => {
-                                res.status(200).json({ message: 'Client successfully added' })
+                                res.status(200).json({ message: 'User successfully added' })
                             })
                             .catch(err => {
 
@@ -52,23 +52,38 @@ exports.addClient = (req, res, next) => {
         })
 }
 
-exports.getClients = (req, res) => {
-
-    Client.find()
+exports.getUsers = (req, res) => {
+    User.find()
+        .select('-password')
         .exec()
-        .then(clients => {
-            res.status(200).json({ clients: clients })
+        .then(users => {
+            res.status(200).json({ users: users })
         })
         .catch(err => {
             res.status(500).json({ message: err })
 
         })
 }
-exports.getClientsWithCars = (req, res) => {
-    Client.find({ access: 'a' })
+
+exports.getUser = (req, res) => {
+    User.find()
+        .select('-password')
+        .exec()
+        .then(user => {
+            res.status(200).json({ user: user })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
+}
+
+exports.getUsersWithCars = (req, res) => {
+    User.find({ access: 'a' })
         .populate('cars')
-        .then(clients => {
-            res.status(200).json({ cliens: clients })
+        .select('-password')
+        .then(users => {
+            res.status(200).json({ users: users })
         })
         .catch(err => {
             res.status(500).json({ message: err })
@@ -76,12 +91,13 @@ exports.getClientsWithCars = (req, res) => {
         })
 }
 
-exports.getClient = (req, res) => {
+exports.getUser = (req, res) => {
 
-    Client.findOne({ ncin: req.params.ncin })
+    User.findOne({ ncin: req.params.ncin })
+        .select('-password')
         .exec()
-        .then(client => {
-            res.status(200).json({ client: client })
+        .then(user => {
+            res.status(200).json({ user: user })
         })
         .catch(err => {
             res.status(500).json({ message: err })
@@ -89,11 +105,12 @@ exports.getClient = (req, res) => {
         })
 
 }
-exports.getClientByusrName = (req, res) => {
-    Client.findOne({ username: req.params.username })
+exports.getUserByusrName = (req, res) => {
+    User.findOne({ username: req.params.username })
+        .select('-password')
         .exec()
-        .then(client => {
-            res.status(200).json({ client: client })
+        .then(user => {
+            res.status(200).json({ user: user })
 
         })
         .catch(err => {
@@ -102,20 +119,21 @@ exports.getClientByusrName = (req, res) => {
         })
 }
 
-exports.clientLogin = (req, res) => {
-    Client.findOne({ username: req.body.username })
+exports.UserLogin = (req, res) => {
+    User.findOne({ username: req.body.username })
         .exec()
-        .then(client => {
-            if (client) {
-                bcrypt.compare(req.body.password, client.password)
+        .then(user => {
+            if (user) {
+                bcrypt.compare(req.body.password, user.password)
                     .then(result => {
                         if (result) {
                             const token = jwt.sign({
-                                username: client.username,
-                                email: client.email
+                                _id: user._id,
+                                username: user.username,
+                                email: user.email
                             }, process.env.JWT_SECRET_KEY)
 
-                            res.status(200).json({ token: token, profileimg: client.profileimg })
+                            res.status(200).json({ token: token, profileimg: user.profileimg })
 
                         } else {
 
@@ -138,9 +156,9 @@ exports.clientLogin = (req, res) => {
 }
 
 
-exports.getClientbyToken = (req, res) => {
+exports.getUserbyToken = (req, res) => {
     if (req.user)
-        Client.findOne({ username: req.user.username })
+        User.findOne({ _id: req.user._id })
             .select('-password')
             .then(user => {
                 res.status(200).json({ user: user })
@@ -153,9 +171,10 @@ exports.getClientbyToken = (req, res) => {
         res.status(401).json({ message: 'auth failed' })
 }
 
-exports.getClientbyUsername = (req, res, next) => {
+exports.getUserbyUsername = (req, res, next) => {
 
-    Client.find({ username: req.params.username })
+    User.find({ username: req.params.username })
+        .select('-password')
         .then(user => {
             res.status(200).json({ user: user })
         })
@@ -166,9 +185,9 @@ exports.getClientbyUsername = (req, res, next) => {
 
 }
 
-exports.deleteClient = (req, res) => {
+exports.deleteUser = (req, res) => {
 
-    Client.deleteOne({ _id: req.params.id })
+    User.deleteOne({ _id: req.params.id })
         .exec()
         .then(result => {
             res.status(200).json({ message: 'done' })
@@ -179,13 +198,14 @@ exports.deleteClient = (req, res) => {
         })
 }
 
-exports.getClientInformations = (req, res) => {
+exports.getUserInformations = (req, res) => {
 
     let info = {};
-    Client.findOne({ username: req.user.username })
-        .then(client => {
-            info.carscount = client.cars.length;
-            info.clientscount = client.clients.length
+    User.findOne({ _id: req.user._id })
+        .select('-password')
+        .then(user => {
+            info.carscount = user.cars.length;
+            info.clientscount = user.clients.length
             res.status(200).json({ info: info })
 
         })
@@ -196,16 +216,16 @@ exports.getClientInformations = (req, res) => {
 
 }
 
-exports.updateClient = (req, res) => {
+exports.updateUser = (req, res) => {
 
     let ops = {};
     for (let obj of req.body) {
         ops[obj.propName] = obj.value
     }
-    Client.updateOne({ username: req.user.username }, { $set: ops })
+    User.updateOne({ _id: req.user._id }, { $set: ops })
         .exec()
         .then(result => {
-            res.status(200).json({ message: 'Client successfully updated' })
+            res.status(200).json({ message: 'user successfully updated' })
         })
         .catch(err => {
             res.status(500).json({ message: err })

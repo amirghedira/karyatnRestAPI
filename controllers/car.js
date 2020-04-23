@@ -1,6 +1,6 @@
 const Car = require('../models/Car');
 const Rent = require('../models/Rent')
-const Client = require('../models/Client')
+const User = require('../models/User')
 
 
 
@@ -22,7 +22,7 @@ exports.addCar = (req, res) => {
                 })
                 newcar.save()
                     .then(result => {
-                        Client.updateOne({ username: req.user.username }, { $push: { cars: newcar } })
+                        User.updateOne({ username: req.user.username }, { $push: { cars: newcar } })
                             .then(user => {
 
                                 res.status(200).json({ message: 'added successfully' })
@@ -54,12 +54,12 @@ exports.addCar = (req, res) => {
 
 
 exports.getFreeCars = (req, res, next) => {
-    Client.findOne({ username: req.user.username })
+    User.findOne({ username: req.user.username })
         .populate('cars')
         .exec()
-        .then(client => {
+        .then(user => {
             let freecars = []
-            client.cars.forEach(car => {
+            user.cars.forEach(car => {
                 if (car.state)
                     freecars.push(car)
             })
@@ -83,11 +83,11 @@ exports.getallcars = (req, res) => {
         })
 }
 exports.getCars = (req, res, next) => {
-    Client.findOne({ username: req.user.username })
+    User.findOne({ username: req.user.username })
         .populate('cars')
         .exec()
-        .then(client => {
-            res.status(200).json({ cars: client.cars })
+        .then(user => {
+            res.status(200).json({ cars: user.cars })
         })
         .catch(err => {
             res.status(500).json({ message: err })
@@ -110,12 +110,12 @@ exports.getCar = (req, res, next) => {
 
 exports.getRentedCars = (req, res, next) => {
 
-    Client.findOne({ username: req.user.username })
+    User.findOne({ username: req.user.username })
         .populate('cars')
         .exec()
-        .then(client => {
+        .then(user => {
             let rentedcars = []
-            client.cars.forEach(car => {
+            user.cars.forEach(car => {
                 if (!car.state)
                     rentedcars.push(car)
             })
@@ -143,20 +143,6 @@ exports.updateState = (req, res, next) => {
         })
 }
 
-exports.clearClientcars = (req, res) => {
-
-    Client.updateOne({ _id: req.params.id }, { $set: { cars: [] } })
-        .exec()
-        .then(result => {
-            res.status(200).json({ message: 'done' })
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({ message: err })
-
-        })
-
-}
 
 exports.deleteForme = (req, res, next) => {
     Car.deleteOne({ _id: req.params.id })
@@ -172,15 +158,15 @@ exports.deleteForme = (req, res, next) => {
 
 exports.deleteCar = (req, res, next) => {
 
-    Client.findOne({ username: req.user.username })
+    User.findOne({ username: req.user.username })
         .exec()
-        .then(client => {
-            if (client.cars.includes(req.params.id)) {
-                const index = client.cars.findIndex(carid => { return carid.toString() === req.params.id })
+        .then(user => {
+            if (user.cars.includes(req.params.id)) {
+                const index = user.cars.findIndex(carid => { return carid.toString() === req.params.id })
                 console.log(index)
                 if (index >= 0) {
-                    client.cars.splice(index, 1)
-                    client.save()
+                    user.cars.splice(index, 1)
+                    user.save()
                         .then(resultsave => {
 
                             Car.deleteOne({ _id: req.params.id })
@@ -222,12 +208,12 @@ exports.deleteCar = (req, res, next) => {
 exports.toFreeCar = (req, res, next) => {
 
 
-    Client.findOne({ username: req.user.username })
+    User.findOne({ username: req.user.username })
         .populate('cars')
         .exec()
-        .then(client => {
-            clientcarNumbers = client.cars.map(car => { return car.carnumber })
-            if (clientcarNumbers.includes(req.params.carnumber)) {
+        .then(user => {
+            usercarNumbers = user.cars.map(car => { return car.carnumber })
+            if (usercarNumbers.includes(req.params.carnumber)) {
                 Car.updateOne({ carnumber: req.params.carnumber }, { $set: { state: true } })
                     .exec()
                     .then(result => {

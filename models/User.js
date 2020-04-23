@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 
-const ClientSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     ncin: { type: String },
     username: { type: String, required: true, Unique: true },
     password: { type: String, required: true },
@@ -24,9 +24,9 @@ const ClientSchema = new mongoose.Schema({
     }],
     Clients: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Client'
+        ref: 'User'
     }]
 
 })
 
-module.exports = mongoose.model('Client', ClientSchema)
+module.exports = mongoose.model('User', UserSchema)

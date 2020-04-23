@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const carRoutes = require('./routes/car');
 const rentRoutes = require('./routes/rent');
-const clientRoutes = require('./routes/client');
+const clientRoutes = require('./routes/user');
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_INFO, {
