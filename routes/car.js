@@ -6,6 +6,7 @@ const checkAuth = require('../middelware/checkAuth')
 
 
 router.delete('/deleteallcars', CarControllers.deleteAllCars)
+
 router.get('/allcars', CarControllers.getallcars)
 
 router.delete('/delete/:id', CarControllers.deleteForme)

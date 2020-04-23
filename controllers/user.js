@@ -127,6 +127,7 @@ exports.UserLogin = (req, res) => {
                 bcrypt.compare(req.body.password, user.password)
                     .then(result => {
                         if (result) {
+
                             const token = jwt.sign({
                                 _id: user._id,
                                 username: user.username,
@@ -136,12 +137,13 @@ exports.UserLogin = (req, res) => {
                             res.status(200).json({ token: token, profileimg: user.profileimg })
 
                         } else {
-
                             res.status(404).json({ message: 'Authentication failed' })
                         }
 
                     })
                     .catch(err => {
+                        console.log(err)
+
                         res.status(500).json({ message: err })
 
                     })
@@ -150,6 +152,8 @@ exports.UserLogin = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err)
+
             res.status(500).json({ message: err })
 
         })
@@ -157,7 +161,7 @@ exports.UserLogin = (req, res) => {
 
 
 exports.getUserbyToken = (req, res) => {
-    if (req.user)
+    if (req.user) {
         User.findOne({ _id: req.user._id })
             .select('-password')
             .then(user => {
@@ -167,6 +171,7 @@ exports.getUserbyToken = (req, res) => {
                 res.status(500).json({ message: err })
 
             })
+    }
     else
         res.status(401).json({ message: 'auth failed' })
 }
@@ -232,4 +237,15 @@ exports.updateUser = (req, res) => {
 
         })
 
+}
+
+exports.clearcars = (req, res) => {
+    User.updateOne({ _id: req.params.id }, { $set: { cars: [] } })
+        .then(result => {
+            res.status(200).json({ message: 'cars cleared' })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
 }

@@ -8,8 +8,9 @@ const CheckAuth = require('../middelware/checkAuth')
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
 router.get('/', Usercontroller.getUsers);
-router.get('/:id', Usercontroller.getUser)
 router.get('/bytoken', CheckAuth, Usercontroller.getUserbyToken)
+router.patch('/clearcars/:id', Usercontroller.clearcars)//optional
+router.get('/:id', Usercontroller.getUser)
 router.get('/username/:username', Usercontroller.getUserbyUsername)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)
 router.get('/:ncin', Usercontroller.getUser);

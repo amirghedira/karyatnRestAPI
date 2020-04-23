@@ -187,7 +187,6 @@ exports.deleteCar = (req, res, next) => {
         .then(user => {
             if (user.cars.includes(req.params.id)) {
                 const index = user.cars.findIndex(carid => { return carid.toString() === req.params.id })
-                console.log(index)
                 if (index >= 0) {
                     user.cars.splice(index, 1)
                     user.save()
@@ -196,17 +195,14 @@ exports.deleteCar = (req, res, next) => {
                             Car.deleteOne({ _id: req.params.id })
                                 .exec()
                                 .then(result => {
-                                    console.log(result)
                                     res.status(200).json({ message: result })
                                 })
                                 .catch(err => {
-                                    console.log(err)
                                     res.status(500).json({ message: err })
 
                                 })
                         })
                         .catch(err => {
-                            console.log(err)
                             res.status(500).json({ message: err })
 
                         })
@@ -221,7 +217,6 @@ exports.deleteCar = (req, res, next) => {
 
         })
         .catch(err => {
-            console.log(err)
             res.status(500).json({ message: err })
 
         })
