@@ -9,7 +9,6 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
 router.get('/', Usercontroller.getUsers);
 router.get('/:id', Usercontroller.getUser)
-router.get('/userwithcars', Usercontroller.getUsersWithCars)
 router.get('/bytoken', CheckAuth, Usercontroller.getUserbyToken)
 router.get('/username/:username', Usercontroller.getUserbyUsername)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)

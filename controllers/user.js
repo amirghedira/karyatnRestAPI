@@ -69,7 +69,7 @@ exports.getUser = (req, res) => {
     User.find()
         .select('-password')
         .exec()
-        .then(users => {
+        .then(user => {
             res.status(200).json({ users: users })
         })
         .catch(err => {

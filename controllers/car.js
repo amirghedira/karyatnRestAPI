@@ -85,6 +85,17 @@ exports.getFreeCars = (req, res, next) => {
 
 }
 
+exports.deleteAllCars = (req, res, next) => {
+    Car.deleteMany({})
+        .exec()
+        .then(result => { res.status(200).json('done') })
+        .catch(err => {
+
+            res.status(500).json({ message: err })
+
+        })
+}
+
 exports.getallcars = (req, res) => {
     Car.find()
         .exec()
