@@ -9,7 +9,7 @@ const CarSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     mileage: { type: String, required: true },
     state: { type: Boolean },
-    images: { type: String, required: true },
+    images: [{ type: String }],
     address: { type: String, required: true },
     ownerid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 

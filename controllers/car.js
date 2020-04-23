@@ -11,6 +11,7 @@ exports.addCar = (req, res) => {
         .exec()
         .then(car => {
             if (!car) {
+                const imageurls = req.files.map(file => { return file.secure_url })
                 User.findOne({ _id: req.user._id })
                     .exec()
                     .then(user => {
@@ -22,7 +23,7 @@ exports.addCar = (req, res) => {
                             price: req.body.price,
                             mileage: req.body.mileage,
                             state: true,
-                            images: req.file.secure_url,
+                            images: imageurls,
                             ownerid: req.user._id,
                             address: user.address
                         })

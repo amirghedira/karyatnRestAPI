@@ -221,6 +221,7 @@ exports.updateUserInfo = (req, res) => {
             res.status(200).json({ message: 'user successfully updated' })
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json({ message: err })
 
         })
