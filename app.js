@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/car', carRoutes);
 app.use('/rent', rentRoutes);
-app.use('/client', clientRoutes);
+app.use('/user', clientRoutes);
 
 
 
