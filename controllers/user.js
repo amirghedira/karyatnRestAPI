@@ -69,8 +69,8 @@ exports.getUser = (req, res) => {
     User.find()
         .select('-password')
         .exec()
-        .then(user => {
-            res.status(200).json({ user: user })
+        .then(users => {
+            res.status(200).json({ users: users })
         })
         .catch(err => {
             res.status(500).json({ message: err })
