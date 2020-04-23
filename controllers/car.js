@@ -10,24 +10,37 @@ exports.addCar = (req, res) => {
         .exec()
         .then(car => {
             if (!car) {
-                const newcar = new Car({
-                    carnumber: req.body.carnumber,
-                    ncinowner: req.body.ncinowner,
-                    brand: req.body.brand,
-                    color: req.body.color,
-                    price: req.body.price,
-                    mileage: req.body.mileage,
-                    state: true,
-                    images: req.file.secure_url,
-                })
-                newcar.save()
-                    .then(result => {
-                        User.updateOne({ username: req.user.username }, { $push: { cars: newcar } })
-                            .then(user => {
+                User.findOne({ _id: req.user._id })
+                    .exec()
+                    .then(user => {
+                        const newcar = new Car({
+                            carnumber: req.body.carnumber,
+                            ncinowner: req.body.ncinowner,
+                            brand: req.body.brand,
+                            color: req.body.color,
+                            price: req.body.price,
+                            mileage: req.body.mileage,
+                            state: true,
+                            images: req.file.secure_url,
+                            ownerid: req.user._id,
+                            address: user.address
+                        })
+                        newcar.save()
+                            .then(result => {
+                                user.cars.push(newcar)
+                                user.save()
+                                    .then(result => {
 
-                                res.status(200).json({ message: 'added successfully' })
+                                        res.status(200).json({ message: 'added successfully' })
+                                    })
+                                    .catch(err => {
+                                        res.status(500).json({ message: err })
+
+                                    })
                             })
                             .catch(err => {
+                                console.log(err)
+
                                 res.status(500).json({ message: err })
 
                             })
