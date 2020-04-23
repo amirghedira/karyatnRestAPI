@@ -1,7 +1,8 @@
 const Car = require('../models/Car');
 const Rent = require('../models/Rent')
 const User = require('../models/User')
-
+const cloudinary = require('../middleware/cloudinary')
+const imageName = require('../middleware/imageName')
 
 
 
@@ -183,14 +184,20 @@ exports.deleteForme = (req, res, next) => {
 exports.deleteCar = (req, res, next) => {
 
     User.findOne({ username: req.user.username })
+        .populate('cars')
         .exec()
         .then(user => {
-            if (user.cars.includes(req.params.id)) {
-                const index = user.cars.findIndex(carid => { return carid.toString() === req.params.id })
+            let carsid = user.cars.map(car => { return car._id })
+            if (carsid.includes(req.params.id)) {
+                const index = carsid.findIndex(carid => { return carid.toString() === req.params.id })
                 if (index >= 0) {
+                    cloudinary.uploader.destroy(imageName(user.cars[index].images), (result, err) => {
+                        if (err)
+                            res.status(500).json({ error: err })
+                    });
                     user.cars.splice(index, 1)
                     user.save()
-                        .then(resultsave => {
+                        .then(result => {
 
                             Car.deleteOne({ _id: req.params.id })
                                 .exec()
@@ -214,7 +221,6 @@ exports.deleteCar = (req, res, next) => {
 
                 res.status(404).json({ message: 'car not found' })
             }
-
         })
         .catch(err => {
             res.status(500).json({ message: err })

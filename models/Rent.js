@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 
 const RentSchema = new mongoose.Schema({
-    ncinoccupant: { type: String, required: true },
-    ncinowner: { type: String, required: true },
-    carnumber: { type: String, required: true },
+    carid: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
+    clientid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     totalprice: { type: String, required: true },
     duration: { type: Number, required: true },
     daterent: { type: Date, required: true }

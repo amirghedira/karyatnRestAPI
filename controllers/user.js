@@ -1,7 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-
+const cloudinary = require('../middleware/cloudinary')
+const ImageName = require('../middleware/imageName')
 
 exports.addUser = (req, res, next) => {
 
@@ -208,7 +209,7 @@ exports.getUserInformations = (req, res) => {
 
 }
 
-exports.updateUser = (req, res) => {
+exports.updateUserInfo = (req, res) => {
 
     let ops = {};
     for (let obj of req.body) {
@@ -226,10 +227,24 @@ exports.updateUser = (req, res) => {
 
 }
 
-exports.clearcars = (req, res) => {
-    User.updateOne({ _id: req.params.id }, { $set: { cars: [] } })
-        .then(result => {
-            res.status(200).json({ message: 'cars cleared' })
+exports.updateUserImage = (req, res) => {
+    User.findOne({ _id: req.user._id })
+        .then(user => {
+            cloudinary.uploader.destroy(ImageName(user.profileimg), (err, result) => {
+                if (err)
+                    res.status(200).json({ error: err })
+            })
+            user.profileimg = req.file.secure_url;
+            user.save()
+                .then(result => {
+
+                    res.status(200).json({ message: 'user image updated successfully' })
+
+                })
+                .catch(err => {
+
+                    res.status(500).json({ message: err })
+                })
         })
         .catch(err => {
             res.status(500).json({ message: err })

@@ -2,7 +2,7 @@ const Rent = require('../models/Rent');
 const Car = require('../models/Car');
 
 
-exports.addLocation = (req, res, next) => {
+exports.addRent = (req, res, next) => {
 
     Car.findOne({ carnumber: req.body.carnumber })
         .then(car => {
@@ -10,9 +10,8 @@ exports.addLocation = (req, res, next) => {
                 if (car.state) {
                     const date = new Date().toISOString();
                     const rent = new Rent({
-                        ncinoccupant: req.body.ncinoccupant,
-                        ncinowner: req.body.ncinowner,
-                        carnumber: req.body.carnumber,
+                        carid: car._id,
+                        clientid: req.user._id,
                         totalprice: req.body.totalprice,
                         duration: req.body.duration,
                         daterent: date

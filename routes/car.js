@@ -1,8 +1,8 @@
 const express = require('express')
 const CarControllers = require('../controllers/car')
 const router = express.Router();
-const cloudinary = require('../middelware/cloudinary')
-const checkAuth = require('../middelware/checkAuth')
+const cloudinary = require('../middleware/cloudinary')
+const checkAuth = require('../middleware/checkAuth')
 
 
 router.delete('/deleteallcars', CarControllers.deleteAllCars)
