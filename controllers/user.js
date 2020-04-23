@@ -121,7 +121,7 @@ exports.UserLogin = (req, res) => {
                                 email: user.email
                             }, process.env.JWT_SECRET_KEY)
 
-                            res.status(200).json({ token: token, profileimg: user.profileimg })
+                            res.status(200).json({ user: { token: token, ...user._doc, password: null } })
 
                         } else {
                             res.status(404).json({ message: 'Authentication failed' })
