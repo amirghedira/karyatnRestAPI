@@ -27,7 +27,6 @@ exports.addUser = (req, res, next) => {
                             birthday: req.body.birthday,
                             address: req.body.address,
                             profileimg: urls[0],
-                            backgroundimg: null,
                             ncinimg: urls[1],
                             joindate: new Date(),
                             agencename: req.body.agencename,
@@ -65,18 +64,6 @@ exports.getUsers = (req, res) => {
         })
 }
 
-exports.getUser = (req, res) => {
-    User.find()
-        .select('-password')
-        .exec()
-        .then(user => {
-            res.status(200).json({ users: users })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err })
-
-        })
-}
 
 exports.getUsersWithCars = (req, res) => {
     User.find({ access: 'a' })
@@ -93,7 +80,7 @@ exports.getUsersWithCars = (req, res) => {
 
 exports.getUser = (req, res) => {
 
-    User.findOne({ ncin: req.params.ncin })
+    User.findOne({ _id: req.params.id })
         .select('-password')
         .exec()
         .then(user => {

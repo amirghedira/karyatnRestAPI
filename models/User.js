@@ -13,7 +13,6 @@ const UserSchema = new mongoose.Schema({
     birthday: { type: String, required: true },
     address: { type: String, required: true },
     profileimg: { type: String, required: true },
-    backgroundimg: { type: String },
     ncinimg: { type: String },
     agencename: { type: String },
     joindate: { type: Date, required: true },
