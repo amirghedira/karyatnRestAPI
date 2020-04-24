@@ -17,6 +17,16 @@ const UserSchema = new mongoose.Schema({
     agencename: { type: String },
     joindate: { type: Date, required: true },
     phonenum: { type: String, required: true },
+    notifications: [
+        {
+            _id: { type: mongoose.Schema.Types.ObjectId, required: true },
+            clientid: { type: mongoose.Schema.Types.ObjectId },
+            carid: { type: mongoose.Schema.Types.ObjectId },
+            type: { type: String },
+            read: { type: Boolean, default: false },
+            date: { type: Date, default: new Date().toISOString() }
+        }
+    ],
     cars: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Car'

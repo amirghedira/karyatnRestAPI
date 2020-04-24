@@ -69,7 +69,7 @@ exports.addCar = (req, res) => {
 
 
 exports.getFreeCars = (req, res, next) => {
-    User.findOne({ username: req.user.username })
+    User.findOne({ _id: req.user._id })
         .populate('cars')
         .exec()
         .then(user => {

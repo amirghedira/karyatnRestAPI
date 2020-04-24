@@ -30,6 +30,7 @@ exports.addUser = (req, res, next) => {
                             profileimg: urls[0],
                             ncinimg: urls[1],
                             joindate: new Date(),
+                            notifications: [],
                             agencename: req.body.agencename,
                             phonenum: req.body.phonenum
                         })

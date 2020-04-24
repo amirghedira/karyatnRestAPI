@@ -1,10 +1,11 @@
 const Rent = require('../models/Rent');
 const Car = require('../models/Car');
+const User = require('../models/User')
+const mongoose = require('mongoose')
 
+exports.sendRequest = (req, res, next) => {
 
-exports.addRent = (req, res, next) => {
-
-    Car.findOne({ carnumber: req.body.carnumber })
+    Car.findOne({ _id: req.body.carid })
         .then(car => {
             if (car) {
                 if (car.state) {
@@ -12,16 +13,30 @@ exports.addRent = (req, res, next) => {
                     const rent = new Rent({
                         carid: car._id,
                         clientid: req.user._id,
+                        ownerid: req.params.ownerid,
                         totalprice: req.body.totalprice,
-                        duration: req.body.duration,
+                        from: req.body.fromdate,
+                        to: req.body.todate,
                         daterent: date
                     })
                     rent.save()
+
                         .then(result => {
-                            Car.updateOne({ carnumber: req.carnumber }, { $set: { state: false } })
-                                .exec()
+
+                            User.updateOne({ _id: req.params.ownerid }, {
+                                $push: {
+                                    notifications: {
+                                        _id: new mongoose.Types.ObjectId(),
+                                        clientid: client._id,
+                                        fromdate: req.body.fromdate,
+                                        carid: new mongoose.Types.ObjectId(),
+                                        type: 'request'
+                                    }
+                                }
+                            })
                                 .then(result => {
-                                    res.status(200).json({ message: 'Rent successfully added' })
+                                    res.status(200).json({ message: 'Request successfully sent' })
+
                                 })
                                 .catch(err => {
                                     res.status(500).json({ message: err })
@@ -45,7 +60,41 @@ exports.addRent = (req, res, next) => {
         })
 
 }
+exports.getUnValidatedRequests = (req, res) => {
+    Rent.findOne({ $and: [{ ownerid: req.user._id }, { validated: false }] })
+        .then(rents => {
+            res.status(200).json({ rents: rents })
 
+        })
+}
+exports.validateRequest = (req, res, next) => {
+    Car.updateOne({ _id: req.body.carid }, { $set: { state: false } })
+        .exec()
+        .then(result => {
+            Rent.updateOne({ _id: req.body.rentid }, { $set: { validated: true } })
+                .then(result => {
+                    res.status(200).json({ message: 'Request Accepted' })
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err })
+                })
+
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
+
+}
+exports.declineRequest = (req, res, next) => {
+    Rent.deleteOne({ _id: req.body.req })
+        .then(result => {
+            res.status(200).json({ message: 'Request declined' })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
+
+}
 exports.getClienthistory = (req, res, next) => {
 
     Rent.find({ ncinoccupant: req.params.ncin })
