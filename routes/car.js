@@ -15,7 +15,7 @@ router.get('/', checkAuth, CarControllers.getCars);
 
 router.patch('/freecar/:carnumber', checkAuth, CarControllers.toFreeCar);
 
-router.post('/', checkAuth, cloudinary.parser.array('carimage', 8), CarControllers.addCar);
+router.post('/', checkAuth, cloudinary.parser.array('carimages', 8), CarControllers.addCar);
 
 router.get('/freecars', checkAuth, CarControllers.getFreeCars);
 
