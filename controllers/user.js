@@ -238,6 +238,7 @@ exports.updateUserImage = (req, res) => {
                 })
                 user.profileimg = req.file.secure_url;
                 user.save()
+
                     .then(result => {
 
                         res.status(200).json({ message: 'user image updated successfully' })
