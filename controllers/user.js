@@ -233,8 +233,7 @@ exports.updateUserImage = (req, res) => {
         .then(user => {
             if (user) {
                 cloudinary.uploader.destroy(ImageName(user.profileimg), (result, err) => {
-                    if (err)
-                        res.status(200).json({ error: err })
+                    console.log(err)
                 })
                 user.profileimg = req.file.secure_url;
                 user.save()
