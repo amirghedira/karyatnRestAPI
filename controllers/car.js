@@ -192,10 +192,13 @@ exports.deleteCar = (req, res, next) => {
             if (carsid.includes(req.params.id)) {
                 const index = carsid.findIndex(carid => { return carid.toString() === req.params.id })
                 if (index >= 0) {
-                    cloudinary.uploader.destroy(imageName(user.cars[index].images), (result, err) => {
-                        if (err)
-                            res.status(500).json({ error: err })
-                    });
+                    user.cars[index].images.forEach(image => {
+
+                        cloudinary.uploader.destroy(imageName(image), (result, err) => {
+                            if (err)
+                                res.status(500).json({ error: err })
+                        });
+                    })
                     user.cars.splice(index, 1)
                     user.save()
                         .then(result => {
