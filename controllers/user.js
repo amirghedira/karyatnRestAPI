@@ -231,24 +231,29 @@ exports.updateUserInfo = (req, res) => {
 exports.updateUserImage = (req, res) => {
     User.findOne({ _id: req.user._id })
         .then(user => {
-            cloudinary.uploader.destroy(ImageName(user.profileimg), (err, result) => {
-                if (err)
-                    res.status(200).json({ error: err })
-            })
-            user.profileimg = req.file.secure_url;
-            user.save()
-                .then(result => {
-
-                    res.status(200).json({ message: 'user image updated successfully' })
-
+            if (user) {
+                cloudinary.uploader.destroy(ImageName(user.profileimg), (result, err) => {
+                    if (err)
+                        res.status(200).json({ error: err })
                 })
-                .catch(err => {
+                user.profileimg = req.file.secure_url;
+                user.save()
+                    .then(result => {
 
-                    res.status(500).json({ message: err })
-                })
+                        res.status(200).json({ message: 'user image updated successfully' })
+
+                    })
+                    .catch(err => {
+                        res.status(500).json({ message: err })
+                    })
+            }
+            else
+                res.status(500).json({ message: 'user not found' })
         })
         .catch(err => {
+
             res.status(500).json({ message: err })
 
         })
 }
+
