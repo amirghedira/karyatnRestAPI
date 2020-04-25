@@ -109,7 +109,7 @@ exports.getallcars = (req, res) => {
         })
 }
 exports.getCars = (req, res, next) => {
-    User.findOne({ username: req.user.username })
+    User.findOne({ _id: req.user._id })
         .populate('cars')
         .exec()
         .then(user => {
@@ -136,7 +136,7 @@ exports.getCar = (req, res, next) => {
 
 exports.getRentedCars = (req, res, next) => {
 
-    User.findOne({ username: req.user.username })
+    User.findOne({ _id: req.user._id })
         .populate('cars')
         .exec()
         .then(user => {
@@ -184,7 +184,7 @@ exports.deleteForme = (req, res, next) => {
 
 exports.deleteCar = (req, res, next) => {
 
-    User.findOne({ username: req.user.username })
+    User.findOne({ _id: req.user._id })
         .populate('cars')
         .exec()
         .then(user => {
@@ -237,7 +237,7 @@ exports.deleteCar = (req, res, next) => {
 exports.toFreeCar = (req, res, next) => {
 
 
-    User.findOne({ username: req.user.username })
+    User.findOne({ id: req.user._id })
         .populate('cars')
         .exec()
         .then(user => {
