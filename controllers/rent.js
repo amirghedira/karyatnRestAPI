@@ -75,7 +75,7 @@ exports.sendRequest = (req, res, next) => {
 
 }
 exports.getUnValidatedRequests = (req, res) => {
-    Rent.findOne({ $and: [{ ownerid: req.user._id }, { validated: false }] })
+    Rent.find({ $and: [{ ownerid: req.user._id }, { validated: false }] })
         .then(rents => {
             res.status(200).json({ rents: rents })
 
