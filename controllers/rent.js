@@ -28,7 +28,7 @@ exports.sendRequest = (req, res, next) => {
                         totalprice: req.body.totalprice,
                         from: req.body.fromdate,
                         to: req.body.todate,
-                        daterent: date
+                        daterent: new Date()
                     })
                     rent.save()
 
