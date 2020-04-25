@@ -3,6 +3,17 @@ const Car = require('../models/Car');
 const User = require('../models/User')
 const mongoose = require('mongoose')
 
+
+exports.getRents = (req, res) => {
+    Rent.find()
+        .then(rents => {
+            res.status(200).json({ rents: rents })
+
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
+}
 exports.sendRequest = (req, res, next) => {
 
     Car.findOne({ _id: req.body.carid })
