@@ -38,7 +38,7 @@ exports.sendRequest = (req, res, next) => {
                                 $push: {
                                     notifications: {
                                         _id: new mongoose.Types.ObjectId(),
-                                        clientid: client._id,
+                                        clientid: req.user._id,
                                         fromdate: req.body.fromdate,
                                         carid: new mongoose.Types.ObjectId(),
                                         type: 'request'
@@ -50,11 +50,14 @@ exports.sendRequest = (req, res, next) => {
 
                                 })
                                 .catch(err => {
-                                    res.status(501).json({ message: err })
+                                    console.log(err)
+                                    res.status(501).json({ message: "err" })
                                 })
                         })
                         .catch(err => {
-                            res.send(err)
+                            console.log(err)
+
+                            res.status(502).json({ message: err })
                         })
 
                 } else {
@@ -97,7 +100,7 @@ exports.validateRequest = (req, res, next) => {
 
 }
 exports.declineRequest = (req, res, next) => {
-    Rent.deleteOne({ _id: req.body.req })
+    Rent.deleteOne({ _id: req.body.rentid })
         .then(result => {
             res.status(200).json({ message: 'Request declined' })
         })
@@ -106,6 +109,19 @@ exports.declineRequest = (req, res, next) => {
         })
 
 }
+
+exports.deleteRent = (req, res) => {
+    Rent.deleteOne({ _id: req.params.id })
+        .then(result => {
+            res.status(200).json({ message: 'e' })
+
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
+}
+
+
 exports.getClienthistory = (req, res, next) => {
 
     Rent.find({ ncinoccupant: req.params.ncin })
