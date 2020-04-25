@@ -54,7 +54,7 @@ exports.sendRequest = (req, res, next) => {
                                 })
                         })
                         .catch(err => {
-                            res.status(502).json(err)
+                            res.send(err)
                         })
 
                 } else {
