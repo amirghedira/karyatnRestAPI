@@ -6,8 +6,8 @@ const RentSchema = new mongoose.Schema({
     clientid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     ownerid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     totalprice: { type: String, required: true },
-    fromdate: { type: Date, required: true },
-    todate: { type: Date, required: true },
+    from: { type: Date, required: true },
+    to: { type: Date, required: true },
     daterent: { type: Date, required: true },
     validated: { type: Boolean, default: false }
 })
