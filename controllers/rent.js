@@ -28,7 +28,7 @@ exports.sendRequest = (req, res, next) => {
                         totalprice: req.body.totalprice,
                         from: req.body.fromdate,
                         to: req.body.todate,
-                        daterent: new Date()
+                        daterent: date
                     })
                     rent.save()
 
@@ -54,7 +54,7 @@ exports.sendRequest = (req, res, next) => {
                                 })
                         })
                         .catch(err => {
-                            res.status(502).json({ message: err })
+                            res.status(502).json(err)
                         })
 
                 } else {
