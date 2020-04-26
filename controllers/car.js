@@ -238,11 +238,9 @@ exports.toFreeCar = (req, res, next) => {
 
 
     User.findOne({ id: req.user._id })
-        .populate('cars')
         .exec()
         .then(user => {
-            usercarNumbers = user.cars.map(car => { return car.carnumber })
-            if (usercarNumbers.includes(req.params.carnumber)) {
+            if (user.cars.includes(req.params.carnumber)) {
                 Car.updateOne({ carnumber: req.params.carnumber }, { $set: { state: true } })
                     .exec()
                     .then(result => {
