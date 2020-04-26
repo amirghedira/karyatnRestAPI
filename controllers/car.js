@@ -235,7 +235,7 @@ exports.deleteCar = (req, res, next) => {
 
 
 exports.toFreeCar = (req, res, next) => {
-    User.findOne({ id: req.user._id })
+    User.findOne({ _id: req.user._id })
         .exec()
         .then(user => {
             const index = user.cars.findIndex(car => { return car._id.toString === req.params.carnumber })
@@ -246,16 +246,19 @@ exports.toFreeCar = (req, res, next) => {
                         res.status(200).json({ message: 'car successfully updated' })
                     })
                     .catch(err => {
+                        console.log(err)
                         res.status(500).json({ message: err })
 
                     })
 
             } else {
+                console.log(err)
                 res.status(404).json({ message: 'car not found' })
 
             }
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json({ message: err })
 
         })
