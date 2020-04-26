@@ -235,12 +235,11 @@ exports.deleteCar = (req, res, next) => {
 
 
 exports.toFreeCar = (req, res, next) => {
-
-
     User.findOne({ id: req.user._id })
         .exec()
         .then(user => {
-            if (user.cars.includes(req.params.carnumber)) {
+            const index = user.cars.findIndex(car => { return car._id.toString === req.params.carnumber })
+            if (index => 0) {
                 Car.updateOne({ carnumber: req.params.carnumber }, { $set: { state: true } })
                     .exec()
                     .then(result => {
