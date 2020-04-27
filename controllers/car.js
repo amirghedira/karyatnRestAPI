@@ -21,8 +21,10 @@ exports.addCar = (req, res) => {
                             brand: req.body.brand,
                             color: req.body.color,
                             price: req.body.price,
-                            mileage: req.body.mileage,
-                            state: true,
+                            transmission: req.body.transmission,
+                            climatisation: req.body.climatisation,
+                            doorscount: req.body.doorscount,
+                            seatscount: req.body.seatscount,
                             images: imageurls,
                             ownerid: req.user._id,
                             address: user.address
@@ -87,16 +89,6 @@ exports.getFreeCars = (req, res, next) => {
 
 }
 
-exports.deleteAllCars = (req, res, next) => {
-    Car.deleteMany({})
-        .exec()
-        .then(result => { res.status(200).json('done') })
-        .catch(err => {
-
-            res.status(500).json({ message: err })
-
-        })
-}
 
 exports.getallcars = (req, res) => {
     Car.find()
@@ -135,13 +127,14 @@ exports.getCar = (req, res, next) => {
 }
 
 exports.getRentedCars = (req, res, next) => {
-
     User.findOne({ _id: req.user._id })
         .populate('cars')
         .exec()
         .then(user => {
+            console.log(user.cars)
             let rentedcars = []
             user.cars.forEach(car => {
+                console.log(car.state)
                 if (!car.state)
                     rentedcars.push(car)
             })
