@@ -8,7 +8,7 @@ const CarSchema = new mongoose.Schema({
     color: { type: String, required: true },
     price: { type: Number, required: true },
     transmission: { type: String, required: true },
-    climatisation: { type: Boolean, required: true },
+    climatisation: { type: String, required: true },
     doorscount: { type: Number, required: true },
     seatscount: { type: Number, required: true },
     state: { type: Boolean, default: true },
