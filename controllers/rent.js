@@ -92,12 +92,18 @@ exports.validateRequest = (req, res, next) => {
                             User.findOne({ _id: req.user._id })
                                 .then(user => {
                                     user.clients.push(rent.clientid)
-                                    res.status(200).json({ message: 'Request Accepted' })
+                                    user.save()
+                                        .then(result => {
+                                            res.status(200).json({ message: 'Request Accepted' })
+                                        })
+                                        .catch(err => {
+                                            res.status(500).json({ message: err })
+
+                                        })
 
                                 })
                                 .catch(err => {
-                                    res.status(500).
-                                        json({ message: err })
+                                    res.status(500).json({ message: err })
                                 })
                         })
                         .catch(err => {
