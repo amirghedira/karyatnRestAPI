@@ -231,9 +231,12 @@ exports.toFreeCar = (req, res, next) => {
     User.findOne({ _id: req.user._id })
         .exec()
         .then(user => {
-            const index = user.cars.findIndex(car => { return car._id.toString === req.params.carnumber })
+            const index = user.cars.findIndex(carid => {
+                return carid.toString() === req.params.id
+            })
+            console.log(index)
             if (index => 0) {
-                Car.updateOne({ carnumber: req.params.carnumber }, { $set: { state: true } })
+                Car.updateOne({ _id: req.params.id }, { $set: { state: true } })
                     .exec()
                     .then(result => {
                         res.status(200).json({ message: 'car successfully updated' })

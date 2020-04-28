@@ -89,8 +89,9 @@ exports.validateRequest = (req, res, next) => {
                     rent.validated = true;
                     rent.save()
                         .then(result => {
-                            User.updateOne({ _id: req.user._id }, { $push: { clients: rent.clientid } })
-                                .then(result => {
+                            User.findOne({ _id: req.user._id })
+                                .then(user => {
+                                    user.clients.push(rent.clientid)
                                     res.status(200).json({ message: 'Request Accepted' })
 
                                 })

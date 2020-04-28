@@ -12,7 +12,7 @@ router.delete('/delete/:id', CarControllers.deleteForme)
 
 router.get('/', checkAuth, CarControllers.getCars);
 
-router.patch('/freecar/:carnumber', checkAuth, CarControllers.toFreeCar);
+router.patch('/freecar/:id', checkAuth, CarControllers.toFreeCar);
 
 router.post('/', checkAuth, cloudinary.parser.array('carimages', 8), CarControllers.addCar);
 
