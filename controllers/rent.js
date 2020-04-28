@@ -40,7 +40,7 @@ exports.sendRequest = (req, res, next) => {
                                         _id: new mongoose.Types.ObjectId(),
                                         clientid: req.user._id,
                                         fromdate: req.body.fromdate,
-                                        carid: new mongoose.Types.ObjectId(),
+                                        carid: car._id,
                                         type: 'request'
                                     }
                                 }
