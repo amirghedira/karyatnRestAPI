@@ -86,7 +86,7 @@ exports.validateRequest = (req, res, next) => {
         .then(result => {
             Rent.findOne({ _id: req.body.rentid })
                 .then(rent => {
-                    rent.validate = true;
+                    rent.validated = true;
                     rent.save()
                         .then(result => {
                             User.updateOne({ _id: req.user._id }, { $push: { clients: rent.clientid } })
