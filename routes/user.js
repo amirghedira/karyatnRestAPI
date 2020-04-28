@@ -10,6 +10,7 @@ router.get('/', Usercontroller.getUsers);
 router.post('/', cloudinary.parser.array('userimages', 3), Usercontroller.addUser);
 router.get('/bytoken', CheckAuth, Usercontroller.getUserbyToken)
 router.patch('/userimage', CheckAuth, cloudinary.parser.single('userimage'), Usercontroller.updateUserImage);
+router.delete('/notifications', CheckAuth, Usercontroller.deleteNotifications)
 router.get('/:id', Usercontroller.getUser)
 router.get('/username/:username', Usercontroller.getUserbyUsername)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)

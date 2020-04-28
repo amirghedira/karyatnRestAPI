@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const cloudinary = require('../middleware/cloudinary')
 const ImageName = require('../middleware/imageName')
 
+
 exports.addUser = (req, res, next) => {
 
     const urls = req.files.map(file => { return file.secure_url })
@@ -258,3 +259,13 @@ exports.updateUserImage = (req, res) => {
         })
 }
 
+
+exports.deleteNotifications = (req, res, next) => {
+    User.updateOne({ _id: req.user._id }, { $set: { notifications: [] } })
+        .then(result => {
+            res.status(200).json({ message: 'done' })
+        })
+        .catch(er => {
+            res.status(500).json({ error: er })
+        })
+}

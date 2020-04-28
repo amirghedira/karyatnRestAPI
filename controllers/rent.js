@@ -85,9 +85,24 @@ exports.validateRequest = (req, res, next) => {
     Car.updateOne({ _id: req.body.carid }, { $set: { state: false } })
         .exec()
         .then(result => {
-            Rent.updateOne({ _id: req.body.rentid }, { $set: { validated: true } })
-                .then(result => {
-                    res.status(200).json({ message: 'Request Accepted' })
+            Rent.findOne({ _id: req.body.rentid })
+                .then(rent => {
+                    rent.validate = true;
+                    rent.save()
+                        .then(result => {
+                            User.updateOne({ _id: req.user._id }, { $push: { clients: rent.clientid } })
+                                .then(result => {
+                                    res.status(200).json({ message: 'Request Accepted' })
+
+                                })
+                                .catch(err => {
+                                    res.status(500).
+                                        json({ message: err })
+                                })
+                        })
+                        .catch(err => {
+                            res.status(500).json({ message: err })
+                        })
                 })
                 .catch(err => {
                     res.status(500).json({ message: err })
