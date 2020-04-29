@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Car'
     }],
-    Clients: [{
+    clients: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }]

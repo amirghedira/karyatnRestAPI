@@ -43,26 +43,22 @@ exports.addCar = (req, res) => {
                                     })
                             })
                             .catch(err => {
-                                console.log(err)
 
                                 res.status(500).json({ message: err })
 
                             })
                     })
                     .catch(err => {
-                        console.log(err)
 
                         res.status(500).json({ message: err })
 
                     })
             } else {
-                console.log('car exist')
 
                 res.status(409).json({ message: 'Car already exist' })
             }
         })
         .catch(err => {
-            console.log(err)
 
             res.status(500).json({ message: err })
         })
@@ -96,8 +92,8 @@ exports.getallcars = (req, res) => {
         .then(cars => {
             res.status(200).json({ cars: cars })
         })
-        .catch(erre => {
-            console.log(erre)
+        .catch(err => {
+            console.log(err)
         })
 }
 exports.getCars = (req, res, next) => {
@@ -131,17 +127,14 @@ exports.getRentedCars = (req, res, next) => {
         .populate('cars')
         .exec()
         .then(user => {
-            console.log(user.cars)
             let rentedcars = []
             user.cars.forEach(car => {
-                console.log(car.state)
                 if (!car.state)
                     rentedcars.push(car)
             })
             res.status(200).json({ rentedcars: rentedcars })
         })
         .catch(err => {
-            console.log(err)
             res.status(500).json({ message: err })
 
         })
@@ -156,7 +149,6 @@ exports.updateState = (req, res, next) => {
             res.status(200).json({ message: 'done' })
         })
         .catch(err => {
-            console.log(err)
             res.status(500).json({ message: err })
 
         })
@@ -234,7 +226,6 @@ exports.toFreeCar = (req, res, next) => {
             const index = user.cars.findIndex(carid => {
                 return carid.toString() === req.params.id
             })
-            console.log(index)
             if (index => 0) {
                 Car.updateOne({ _id: req.params.id }, { $set: { state: true } })
                     .exec()
@@ -242,19 +233,16 @@ exports.toFreeCar = (req, res, next) => {
                         res.status(200).json({ message: 'car successfully updated' })
                     })
                     .catch(err => {
-                        console.log(err)
                         res.status(500).json({ message: err })
 
                     })
 
             } else {
-                console.log(err)
                 res.status(404).json({ message: 'car not found' })
 
             }
         })
         .catch(err => {
-            console.log(err)
             res.status(500).json({ message: err })
 
         })
