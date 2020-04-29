@@ -259,13 +259,32 @@ exports.updateUserImage = (req, res) => {
         })
 }
 
+exports.deleteNotification = (req, res) => {
+    User.findOne({ _id: req.user._id })
+        .then(user => {
+            const index = user.notifications.findIndex(notification => { return notification._id.toString() === req.params.id })
+            user.notifications.splice(index, 1)
+            user.save()
+                .then(result => {
+                    res.status(200).json({ message: 'notification removed' })
 
+                })
+                .catch(err => {
+                    res.status(500).json({ error: err })
+
+                })
+        })
+        .catch(err => {
+            res.status(500).json({ error: err })
+
+        })
+}
 exports.deleteNotifications = (req, res, next) => {
     User.updateOne({ _id: req.user._id }, { $set: { notifications: [] } })
         .then(result => {
-            res.status(200).json({ message: 'done' })
+            res.status(200).json({ message: 'notifications cleared' })
         })
-        .catch(er => {
-            res.status(500).json({ error: er })
+        .catch(err => {
+            res.status(500).json({ error: err })
         })
 }
