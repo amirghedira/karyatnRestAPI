@@ -8,7 +8,6 @@ exports.getRents = (req, res) => {
     Rent.find()
         .then(rents => {
             res.status(200).json({ rents: rents })
-
         })
         .catch(err => {
             res.status(500).json({ message: err })
@@ -19,58 +18,87 @@ exports.sendRequest = (req, res, next) => {
     Car.findOne({ _id: req.body.carid })
         .then(car => {
             if (car) {
-                if (car.state) {
-                    const date = new Date().toISOString();
-                    const rent = new Rent({
-                        carid: car._id,
-                        clientid: req.user._id,
-                        ownerid: req.params.ownerid,
-                        totalprice: req.body.totalprice,
-                        from: req.body.fromdate,
-                        to: req.body.todate,
-                        daterent: date
-                    })
-                    rent.save()
-
-                        .then(result => {
-
-                            User.updateOne({ _id: req.params.ownerid }, {
-                                $push: {
-                                    notifications: {
-                                        _id: new mongoose.Types.ObjectId(),
-                                        userid: req.user._id,
-                                        carid: car._id,
-                                        type: 'request'
-                                    }
-                                }
+                Rent.find({ carid: car._id })
+                    .then(rents => {
+                        let validdate = true;
+                        rents.forEach(rent => {
+                            if ((req.body.fromdate.getTime() <= rent.to.getTime() && req.body.fromdate.getTime() >= rent.from.getTime()))
+                                validdate = false;
+                        })
+                        if (validdate) {
+                            const date = new Date().toISOString();
+                            const rent = new Rent({
+                                carid: car._id,
+                                clientid: req.user._id,
+                                ownerid: req.params.ownerid,
+                                totalprice: req.body.totalprice,
+                                from: req.body.fromdate,
+                                to: req.body.todate,
+                                daterent: date
                             })
+                            rent.save()
                                 .then(result => {
-                                    res.status(200).json({ message: 'Request successfully sent' })
+                                    User.updateOne({ _id: req.params.ownerid }, {
+                                        $push: {
+                                            notifications: {
+                                                _id: new mongoose.Types.ObjectId(),
+                                                userid: req.user._id,
+                                                carid: car._id,
+                                                type: 'request'
+                                            }
+                                        }
+                                    })
+                                        .then(result => {
+                                            res.status(200).json({ message: 'Request successfully sent' })
 
+                                        })
+                                        .catch(err => {
+                                            res.status(501).json({ message: "err" })
+                                        })
                                 })
                                 .catch(err => {
-                                    res.status(501).json({ message: "err" })
+                                    res.status(502).json({ message: err })
                                 })
-                        })
-                        .catch(err => {
-                            console.log(err)
 
-                            res.status(502).json({ message: err })
-                        })
-
-                } else {
-
-                    res.status(404).json({ message: 'Car not found' });
-                }
-
+                        } else {
+                            res.status(409).json({ message: 'Car already reserved' })
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).json({ message: err })
+                    })
             } else {
-                res.status(409).json({ message: 'Car already rented' });
+
+                res.status(404).json({ message: 'Car not found' });
             }
         })
         .catch(err => {
-            res.status(503).json({ message: err })
+            res.status(500).json({ message: err })
         })
 
+}
+
+exports.endRent = (req, res) => {
+    Rent.findone({ _id: req.params.id })
+        .then(rent => {
+            rent.active = false;
+            rent.save()
+                .then(result => {
+                    Car.updateOne({ _id: rent.carid }, { $set: { state: true } })
+                        .then(result => {
+                            res.status(200).json({ message: 'rent successfully ended' })
+                        })
+                        .catch(err => {
+                            res.status(500).json({ message: err })
+                        })
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err })
+                })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
 }
 exports.getUnValidatedRequests = (req, res) => {
     Rent.find({ $and: [{ ownerid: req.user._id }, { validated: false }] })
@@ -78,40 +106,61 @@ exports.getUnValidatedRequests = (req, res) => {
             res.status(200).json({ rents: rents })
 
         })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
 }
-exports.validateRequest = (req, res, next) => {
-    Car.updateOne({ _id: req.body.carid }, { $set: { state: false } })
-        .exec()
-        .then(result => {
-            Rent.findOne({ _id: req.body.rentid })
-                .then(rent => {
-                    rent.validated = true;
-                    rent.save()
+
+exports.getReservations = (req, res) => {
+    Rent.find({ $and: [{ ownerid: req.user._id }, { validated: true }] })
+        .then(reservations => {
+            res.status(200).json({ reservations: reservations })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
+}
+exports.getActiveRents = (req, res) => {
+    Rent.find({ $and: [{ ownerid: req.user._id }, { active: true }] })
+        .then(activerents => {
+            res.status(200).json({ activerents: activerents })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+
+        })
+}
+exports.activateRent = (req, res) => {
+    Rent.find({ _id: req.params.id })
+        .then(rent => {
+            rent.active = true
+            rent.save()
+                .then(result => {
+                    Car.updateOne({ _id: rent.carid }, { $set: { state: false } })
                         .then(result => {
-                            User.findOne({ _id: req.user._id })
-                                .then(manager => {
-                                    manager.clients.push(rent.clientid)
-                                    manager.save()
+                            user.updateOne({ _id: rent.ownerid }, {
+                                $push: {
+                                    notifications: {
+                                        _id: new mongoose.Types.ObjectId(),
+                                        userid: rent.clientid,
+                                        carid: rent.carid,
+                                        type: 'activatedrent'
+                                    }
+                                }
+                            })
+                                .then(result => {
+                                    User.updateOne({ _id: rent.clientid }, {
+                                        $push: {
+                                            notifications: {
+                                                _id: new mongoose.Types.ObjectId(),
+                                                userid: rent.ownerid,
+                                                carid: rent.carid,
+                                                type: 'activatedrent'
+                                            }
+                                        }
+                                    })
                                         .then(result => {
-                                            User.updateOne({ _id: rent.clientid }, {
-                                                $push: {
-                                                    notifications:
-                                                    {
-                                                        _id: new mongoose.Types.ObjectId(),
-                                                        userid: manager._id,
-                                                        carid: rent.carid,
-                                                        type: 'requestaccepted'
-                                                    }
-                                                }
-                                            })
-                                                .then(result => {
-                                                    res.status(200).json({ message: 'Request accepted successfully' })
-                                                })
-                                                .catch(err => {
-                                                    res.status(500).json({ message: err })
-
-                                                })
-
+                                            res.status(200).json({ message: 'car successfully rented' })
                                         })
                                         .catch(err => {
                                             res.status(500).json({ message: err })
@@ -120,6 +169,7 @@ exports.validateRequest = (req, res, next) => {
                                 })
                                 .catch(err => {
                                     res.status(500).json({ message: err })
+
                                 })
                         })
                         .catch(err => {
@@ -129,12 +179,61 @@ exports.validateRequest = (req, res, next) => {
                 .catch(err => {
                     res.status(500).json({ message: err })
                 })
-
         })
         .catch(err => {
             res.status(500).json({ message: err })
         })
 
+}
+
+exports.validateRequest = (req, res, next) => {
+
+    Rent.findOne({ _id: req.body.rentid })
+        .then(rent => {
+            rent.validated = true;
+            rent.save()
+                .then(result => {
+                    User.findOne({ _id: req.user._id })
+                        .then(manager => {
+                            manager.clients.push(rent.clientid)
+                            manager.save()
+                                .then(result => {
+                                    User.updateOne({ _id: rent.clientid }, {
+                                        $push: {
+                                            notifications:
+                                            {
+                                                _id: new mongoose.Types.ObjectId(),
+                                                userid: manager._id,
+                                                carid: rent.carid,
+                                                type: 'requestaccepted'
+                                            }
+                                        }
+                                    })
+                                        .then(result => {
+                                            res.status(200).json({ message: 'Request accepted successfully' })
+                                        })
+                                        .catch(err => {
+                                            res.status(500).json({ message: err })
+
+                                        })
+
+                                })
+                                .catch(err => {
+                                    res.status(500).json({ message: err })
+
+                                })
+                        })
+                        .catch(err => {
+                            res.status(500).json({ message: err })
+                        })
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err })
+                })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err })
+        })
 }
 exports.declineRequest = (req, res, next) => {
     Rent.findOne({ _id: req.body.rentid })
