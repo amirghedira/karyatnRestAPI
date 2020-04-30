@@ -30,7 +30,6 @@ exports.sendRequest = (req, res, next) => {
 
                         })
                         if (validdate.state) {
-                            const date = new Date().toISOString();
                             const rent = new Rent({
                                 carid: car._id,
                                 clientid: req.user._id,
@@ -38,7 +37,7 @@ exports.sendRequest = (req, res, next) => {
                                 totalprice: req.body.totalprice,
                                 from: req.body.fromdate,
                                 to: req.body.todate,
-                                daterent: date
+                                daterent: new Date().toISOString()
                             })
                             rent.save()
                                 .then(result => {
