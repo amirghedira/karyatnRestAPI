@@ -38,8 +38,7 @@ exports.sendRequest = (req, res, next) => {
                                 $push: {
                                     notifications: {
                                         _id: new mongoose.Types.ObjectId(),
-                                        clientid: req.user._id,
-                                        fromdate: req.body.fromdate,
+                                        userid: req.user._id,
                                         carid: car._id,
                                         type: 'request'
                                     }
@@ -90,11 +89,29 @@ exports.validateRequest = (req, res, next) => {
                     rent.save()
                         .then(result => {
                             User.findOne({ _id: req.user._id })
-                                .then(user => {
-                                    user.clients.push(rent.clientid)
-                                    user.save()
+                                .then(manager => {
+                                    manager.clients.push(rent.clientid)
+                                    manager.save()
                                         .then(result => {
-                                            res.status(200).json({ message: 'Request Accepted' })
+                                            User.updateOne({ _id: rent.clientid }, {
+                                                $push: {
+                                                    notifications:
+                                                    {
+                                                        _id: new mongoose.Types.ObjectId(),
+                                                        userid: manager._id,
+                                                        carid: rent.carid,
+                                                        type: 'requestaccepted'
+                                                    }
+                                                }
+                                            })
+                                                .then(result => {
+                                                    res.status(200).json({ message: 'Request accepted successfully' })
+                                                })
+                                                .catch(err => {
+                                                    res.status(500).json({ message: err })
+
+                                                })
+
                                         })
                                         .catch(err => {
                                             res.status(500).json({ message: err })
@@ -120,14 +137,39 @@ exports.validateRequest = (req, res, next) => {
 
 }
 exports.declineRequest = (req, res, next) => {
-    Rent.deleteOne({ _id: req.body.rentid })
-        .then(result => {
-            res.status(200).json({ message: 'Request declined' })
+    Rent.findOne({ _id: req.body.rentid })
+        .then(rent => {
+            User.findOne({ _id: rent.clientid })
+                .then(user => {
+                    user.notifications.push({
+                        _id: new mongoose.Types.ObjectId(),
+                        userid: rent.ownerid,
+                        carid: rent.carid,
+                        type: 'declinedrequest'
+                    })
+                    user.save()
+                        .then(result => {
+                            Rent.deleteOne({ _id: req.body.rentid })
+                                .then(result => {
+                                    res.status(200).json({ message: 'Request declined successfully' })
+                                })
+                                .catch(err => {
+                                    res.status(500).json({ message: err })
+
+                                })
+                        })
+                        .catch(err => {
+                            res.status(500).json({ message: err })
+
+                        })
+                })
+                .catch(err => {
+                    res.status(500).json({ message: err })
+                })
         })
         .catch(err => {
             res.status(500).json({ message: err })
         })
-
 }
 
 exports.deleteRent = (req, res) => {

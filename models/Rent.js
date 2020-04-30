@@ -9,7 +9,8 @@ const RentSchema = new mongoose.Schema({
     from: { type: Date, required: true },
     to: { type: Date, required: true },
     daterent: { type: Date, required: true },
-    validated: { type: Boolean, default: false }
+    validated: { type: Boolean, default: false },
+    active: { type: Boolean, default: false }
 })
 
 

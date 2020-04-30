@@ -280,9 +280,19 @@ exports.deleteNotification = (req, res) => {
         })
 }
 exports.deleteNotifications = (req, res, next) => {
-    User.updateOne({ _id: req.user._id }, { $set: { notifications: [] } })
+    User.updateOne({ _id: req.params.id }, { $set: { notifications: [] } })
         .then(result => {
             res.status(200).json({ message: 'notifications cleared' })
+        })
+        .catch(err => {
+            res.status(500).json({ error: err })
+        })
+}
+
+exports.getManagers = (req, res) => {
+    User.find({ access: 'a' })
+        .then(managers => {
+            res.status(200).json({ managers: managers })
         })
         .catch(err => {
             res.status(500).json({ error: err })

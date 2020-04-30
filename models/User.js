@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     notifications: [
         {
             _id: { type: mongoose.Schema.Types.ObjectId, required: true },
-            clientid: { type: mongoose.Schema.Types.ObjectId },
+            userid: { type: mongoose.Schema.Types.ObjectId },
             carid: { type: mongoose.Schema.Types.ObjectId },
             type: { type: String },
             read: { type: Boolean, default: false },
