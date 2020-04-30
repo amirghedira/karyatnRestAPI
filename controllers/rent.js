@@ -20,14 +20,16 @@ exports.sendRequest = (req, res, next) => {
             if (car) {
                 Rent.find({ carid: car._id })
                     .then(rents => {
-                        let validdate = true;
+                        let validdate = { state: true, fromdate: null, todate: null };
                         rents.forEach(rent => {
                             if ((new Date(req.body.fromdate).getTime() <= new Date(rent.to).getTime() && new Date(req.body.fromdate).getTime() >= new Date(rent.from).getTime())) {
-                                validdate = false;
+                                validdate.state = false;
+                                validdate.fromdate = rent.from
+                                validdate.todate = rent.to
                             }
 
                         })
-                        if (validdate) {
+                        if (validdate.state) {
                             const date = new Date().toISOString();
                             const rent = new Rent({
                                 carid: car._id,
@@ -63,7 +65,7 @@ exports.sendRequest = (req, res, next) => {
                                 })
 
                         } else {
-                            res.status(409).json({ message: 'Car already reserved' })
+                            res.status(409).json({ message: 'Car already reserved', fromdate: validdate.fromdate, todate: validdate.todate })
                         }
                     })
                     .catch(err => {
