@@ -22,8 +22,10 @@ exports.sendRequest = (req, res, next) => {
                     .then(rents => {
                         let validdate = true;
                         rents.forEach(rent => {
-                            if ((req.body.fromdate.getTime() <= rent.to.getTime() && req.body.fromdate.getTime() >= rent.from.getTime()))
+                            if ((new Date(req.body.fromdate).getTime() <= new Date(rent.to).getTime() && new Date(req.body.fromdate).getTime() >= new Date(rent.from).getTime())) {
                                 validdate = false;
+                            }
+
                         })
                         if (validdate) {
                             const date = new Date().toISOString();
