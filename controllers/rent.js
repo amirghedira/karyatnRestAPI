@@ -82,7 +82,7 @@ exports.sendRequest = (req, res, next) => {
 }
 
 exports.endRent = (req, res) => {
-    Rent.findone({ _id: req.params.id })
+    Rent.findOne({ _id: req.params.id })
         .then(rent => {
             rent.active = false;
             rent.save()
