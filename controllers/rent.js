@@ -92,14 +92,19 @@ exports.endRent = (req, res) => {
                             res.status(200).json({ message: 'rent successfully ended' })
                         })
                         .catch(err => {
+                            console.log(err)
                             res.status(500).json({ message: err })
+
                         })
                 })
                 .catch(err => {
+                    console.log(err)
                     res.status(500).json({ message: err })
                 })
         })
         .catch(err => {
+            console.log(err)
+
             res.status(500).json({ message: err })
         })
 }
@@ -141,7 +146,7 @@ exports.activateRent = (req, res) => {
                 .then(result => {
                     Car.updateOne({ _id: rent.carid }, { $set: { state: false } })
                         .then(result => {
-                            user.updateOne({ _id: rent.ownerid }, {
+                            User.updateOne({ _id: rent.ownerid }, {
                                 $push: {
                                     notifications: {
                                         _id: new mongoose.Types.ObjectId(),
@@ -166,24 +171,29 @@ exports.activateRent = (req, res) => {
                                             res.status(200).json({ message: 'car successfully rented' })
                                         })
                                         .catch(err => {
+                                            console.log(err)
                                             res.status(500).json({ message: err })
 
                                         })
                                 })
                                 .catch(err => {
+                                    console.log(err)
                                     res.status(500).json({ message: err })
 
                                 })
                         })
                         .catch(err => {
+                            console.log(err)
                             res.status(500).json({ message: err })
                         })
                 })
                 .catch(err => {
+                    console.log(err)
                     res.status(500).json({ message: err })
                 })
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json({ message: err })
         })
 
