@@ -134,7 +134,7 @@ exports.getActiveRents = (req, res) => {
         })
 }
 exports.activateRent = (req, res) => {
-    Rent.find({ _id: req.params.id })
+    Rent.findOne({ _id: req.params.id })
         .then(rent => {
             rent.active = true
             rent.save()
