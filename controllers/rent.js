@@ -10,7 +10,7 @@ exports.getRents = (req, res) => {
             res.status(200).json({ rents: rents })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 exports.sendRequest = (req, res, next) => {
@@ -52,7 +52,7 @@ exports.sendRequest = (req, res, next) => {
                                         }
                                     })
                                         .then(result => {
-                                            res.status(200).json({ message: 'Request successfully sent' })
+                                            res.status(201).json({ message: 'Request successfully sent' })
 
                                         })
                                         .catch(err => {
@@ -60,7 +60,7 @@ exports.sendRequest = (req, res, next) => {
                                         })
                                 })
                                 .catch(err => {
-                                    res.status(500).json({ message: err })
+                                    res.status(500).json({ message: err.message })
                                 })
 
                         } else {
@@ -68,7 +68,7 @@ exports.sendRequest = (req, res, next) => {
                         }
                     })
                     .catch(err => {
-                        res.status(500).json({ message: err })
+                        res.status(500).json({ message: err.message })
                     })
             } else {
 
@@ -76,7 +76,7 @@ exports.sendRequest = (req, res, next) => {
             }
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 
 }
@@ -92,20 +92,17 @@ exports.endRent = (req, res) => {
                             res.status(200).json({ message: 'rent successfully ended' })
                         })
                         .catch(err => {
-                            console.log(err)
-                            res.status(500).json({ message: err })
+                            res.status(500).json({ message: err.message })
 
                         })
                 })
                 .catch(err => {
-                    console.log(err)
-                    res.status(500).json({ message: err })
+                    res.status(500).json({ message: err.message })
                 })
         })
         .catch(err => {
-            console.log(err)
 
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 exports.getUnValidatedRequests = (req, res) => {
@@ -115,7 +112,7 @@ exports.getUnValidatedRequests = (req, res) => {
 
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 
@@ -125,7 +122,7 @@ exports.getReservations = (req, res) => {
             res.status(200).json({ reservations: reservations })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 exports.getActiveRents = (req, res) => {
@@ -134,7 +131,7 @@ exports.getActiveRents = (req, res) => {
             res.status(200).json({ activerents: activerents })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -171,30 +168,26 @@ exports.activateRent = (req, res) => {
                                             res.status(200).json({ message: 'car successfully rented' })
                                         })
                                         .catch(err => {
-                                            console.log(err)
-                                            res.status(500).json({ message: err })
+                                            res.status(500).json({ message: err.message })
 
                                         })
                                 })
                                 .catch(err => {
-                                    console.log(err)
-                                    res.status(500).json({ message: err })
+                                    res.status(500).json({ message: err.message })
 
                                 })
                         })
                         .catch(err => {
-                            console.log(err)
-                            res.status(500).json({ message: err })
+                            res.status(500).json({ message: err.message })
                         })
                 })
                 .catch(err => {
-                    console.log(err)
-                    res.status(500).json({ message: err })
+
+                    res.status(500).json({ message: err.message })
                 })
         })
         .catch(err => {
-            console.log(err)
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 
 }
@@ -226,26 +219,26 @@ exports.validateRequest = (req, res, next) => {
                                             res.status(200).json({ message: 'Request accepted successfully' })
                                         })
                                         .catch(err => {
-                                            res.status(500).json({ message: err })
+                                            res.status(500).json({ message: err.message })
 
                                         })
 
                                 })
                                 .catch(err => {
-                                    res.status(500).json({ message: err })
+                                    res.status(500).json({ message: err.message })
 
                                 })
                         })
                         .catch(err => {
-                            res.status(500).json({ message: err })
+                            res.status(500).json({ message: err.message })
                         })
                 })
                 .catch(err => {
-                    res.status(500).json({ message: err })
+                    res.status(500).json({ message: err.message })
                 })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 exports.declineRequest = (req, res, next) => {
@@ -266,21 +259,21 @@ exports.declineRequest = (req, res, next) => {
                                     res.status(200).json({ message: 'Request declined successfully' })
                                 })
                                 .catch(err => {
-                                    res.status(500).json({ message: err })
+                                    res.status(500).json({ message: err.message })
 
                                 })
                         })
                         .catch(err => {
-                            res.status(500).json({ message: err })
+                            res.status(500).json({ message: err.message })
 
                         })
                 })
                 .catch(err => {
-                    res.status(500).json({ message: err })
+                    res.status(500).json({ message: err.message })
                 })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 
@@ -291,7 +284,7 @@ exports.deleteRent = (req, res) => {
 
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 
@@ -305,7 +298,7 @@ exports.getClienthistory = (req, res, next) => {
         })
         .catch(err => {
 
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -320,7 +313,7 @@ exports.getClientCount = (req, res, next) => {
             res.status(200).json({ count: count })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 

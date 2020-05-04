@@ -38,19 +38,19 @@ exports.addCar = (req, res) => {
                                         res.status(200).json({ message: 'added successfully' })
                                     })
                                     .catch(err => {
-                                        res.status(500).json({ message: err })
+                                        res.status(500).json({ message: err.message })
 
                                     })
                             })
                             .catch(err => {
 
-                                res.status(500).json({ message: err })
+                                res.status(500).json({ message: err.message })
 
                             })
                     })
                     .catch(err => {
 
-                        res.status(500).json({ message: err })
+                        res.status(500).json({ message: err.message })
 
                     })
             } else {
@@ -60,7 +60,7 @@ exports.addCar = (req, res) => {
         })
         .catch(err => {
 
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 
 }
@@ -79,7 +79,7 @@ exports.getFreeCars = (req, res, next) => {
             res.status(200).json({ freecars: freecars })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -93,7 +93,7 @@ exports.getallcars = (req, res) => {
             res.status(200).json({ cars: cars })
         })
         .catch(err => {
-            console.log(err)
+            res.status(500).json({ message: err.message })
         })
 }
 exports.getCars = (req, res, next) => {
@@ -104,7 +104,7 @@ exports.getCars = (req, res, next) => {
             res.status(200).json({ cars: user.cars })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -117,7 +117,7 @@ exports.getCar = (req, res, next) => {
             res.status(200).json({ car: car })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 
 }
@@ -135,7 +135,7 @@ exports.getRentedCars = (req, res, next) => {
             res.status(200).json({ rentedcars: rentedcars })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -149,7 +149,7 @@ exports.updateState = (req, res, next) => {
             res.status(200).json({ message: 'done' })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -194,12 +194,12 @@ exports.deleteCar = (req, res, next) => {
                                     res.status(200).json({ message: result })
                                 })
                                 .catch(err => {
-                                    res.status(500).json({ message: err })
+                                    res.status(500).json({ message: err.message })
 
                                 })
                         })
                         .catch(err => {
-                            res.status(500).json({ message: err })
+                            res.status(500).json({ message: err.message })
 
                         })
                 }
@@ -212,7 +212,7 @@ exports.deleteCar = (req, res, next) => {
             }
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -233,7 +233,7 @@ exports.toFreeCar = (req, res, next) => {
                         res.status(200).json({ message: 'car successfully updated' })
                     })
                     .catch(err => {
-                        res.status(500).json({ message: err })
+                        res.status(500).json({ message: err.message })
 
                     })
 
@@ -243,7 +243,7 @@ exports.toFreeCar = (req, res, next) => {
             }
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -256,7 +256,7 @@ exports.getCarHistory = (req, res, next) => {
             res.status(200).json({ histories: histories })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 
 }
@@ -269,7 +269,7 @@ exports.getCarsCount = (req, res, next) => {
             res.status(200).json({ count: count })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 
 }

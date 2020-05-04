@@ -41,16 +41,16 @@ exports.addUser = (req, res, next) => {
                             })
                             .catch(err => {
 
-                                res.status(500).json({ message: err })
+                                res.status(500).json({ message: err.message })
                             })
                     })
                     .catch(err => {
-                        res.status(500).json({ message: err })
+                        res.status(500).json({ message: err.message })
                     })
             }
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
         })
 }
 
@@ -62,7 +62,7 @@ exports.getUsers = (req, res) => {
             res.status(200).json({ users: users })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -76,7 +76,8 @@ exports.getUsersWithCars = (req, res) => {
             res.status(200).json({ users: users })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -90,8 +91,8 @@ exports.getUser = (req, res) => {
             res.status(200).json({ user: user })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
 
+            res.status(500).json({ message: err.message })
         })
 
 }
@@ -104,7 +105,7 @@ exports.getUserByusrName = (req, res) => {
 
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -132,9 +133,7 @@ exports.UserLogin = (req, res) => {
 
                     })
                     .catch(err => {
-                        console.log(err)
-
-                        res.status(500).json({ message: err })
+                        res.status(500).json({ message: err.message })
 
                     })
             } else {
@@ -142,9 +141,7 @@ exports.UserLogin = (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err)
-
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -158,7 +155,7 @@ exports.getUserbyToken = (req, res) => {
                 res.status(200).json({ user: user })
             })
             .catch(err => {
-                res.status(500).json({ message: err })
+                res.status(500).json({ message: err.message })
 
             })
     }
@@ -174,7 +171,7 @@ exports.getUserbyUsername = (req, res, next) => {
             res.status(200).json({ user: user })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -188,7 +185,7 @@ exports.deleteUser = (req, res) => {
             res.status(200).json({ message: 'done' })
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
@@ -205,7 +202,7 @@ exports.getUserInformations = (req, res) => {
 
         })
         .catch(err => {
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -223,8 +220,7 @@ exports.updateUserInfo = (req, res) => {
             res.status(200).json({ message: 'user successfully updated' })
         })
         .catch(err => {
-            console.log(err)
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 
@@ -235,7 +231,7 @@ exports.updateUserImage = (req, res) => {
         .then(user => {
             if (user) {
                 cloudinary.uploader.destroy(ImageName(user.profileimg), (result, err) => {
-                    console.log(err)
+
                 })
                 user.profileimg = req.file.secure_url;
                 user.save()
@@ -246,7 +242,7 @@ exports.updateUserImage = (req, res) => {
 
                     })
                     .catch(err => {
-                        res.status(500).json({ message: err })
+                        res.status(500).json({ message: err.message })
                     })
             }
             else
@@ -254,7 +250,7 @@ exports.updateUserImage = (req, res) => {
         })
         .catch(err => {
 
-            res.status(500).json({ message: err })
+            res.status(500).json({ message: err.message })
 
         })
 }
