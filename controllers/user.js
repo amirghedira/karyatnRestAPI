@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const cloudinary = require('../middleware/cloudinary')
 const ImageName = require('../middleware/imageName')
-
+const sendMail = require('../middleware/sendMail')
 
 exports.addUser = (req, res, next) => {
 
@@ -12,7 +12,7 @@ exports.addUser = (req, res, next) => {
         .exec()
         .then(user => {
             if (user)
-                res.status(409).json({ message: 'user already exists' })
+                res.status(404).json({ message: 'user already exists' })
             else {
                 bcrypt.hash(req.body.password, 11)
                     .then(password => {
@@ -37,7 +37,17 @@ exports.addUser = (req, res, next) => {
                         })
                         user.save()
                             .then(result => {
-                                res.status(200).json({ message: 'User successfully added' })
+                                const token = jwt.sign(
+                                    {
+                                        _id: result._doc._id,
+                                        username: result._doc.username,
+                                        email: result._doc.email
+                                    }, process.env.JWT_SECRET_KEY
+                                )
+                                sendMail(result._doc.email,
+                                    "Email Confirmation",
+                                    `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
+                                res.status(201).json({ message: 'User successfully added' })
                             })
                             .catch(err => {
 
@@ -108,6 +118,19 @@ exports.getUserByusrName = (req, res) => {
             res.status(500).json({ message: err.message })
 
         })
+}
+
+exports.userConfirmation = async (req, res) => {
+
+    try {
+
+        const user = jwt.verify(req.body.token, process.env.JWT_SECRET_KEY)
+        await User.updateOne({ _id: user._id }, { $set: { confirmed: true } })
+        res.status(200).json({ message: 'user successfully confirmed' })
+
+    } catch (error) {
+        res.status(401).json({ message: 'User confirmation failed' })
+    }
 }
 
 exports.UserLogin = (req, res) => {

@@ -6,6 +6,7 @@ const rentRoutes = require('./routes/rent');
 const clientRoutes = require('./routes/user');
 const mongoose = require('mongoose');
 
+
 mongoose.connect(process.env.MONGO_INFO, {
     useUnifiedTopology: true,
     useNewUrlParser: true
@@ -20,6 +21,7 @@ app.all("/*", function (req, res, next) {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
 
 app.use('/car', carRoutes);
 app.use('/rent', rentRoutes);

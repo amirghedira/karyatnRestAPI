@@ -18,6 +18,7 @@ const UserSchema = new mongoose.Schema({
     agencename: { type: String },
     joindate: { type: Date, required: true },
     phonenum: { type: String, required: true },
+    confirmed: { type: Boolean, required: true, default: false },
     notifications: [
         {
             _id: { type: mongoose.Schema.Types.ObjectId, required: true },
