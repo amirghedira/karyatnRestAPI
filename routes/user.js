@@ -20,6 +20,7 @@ router.post('/login', Usercontroller.UserLogin);
 router.post('/sendconfirmation', Usercontroller.sendConfirmation)
 router.post('/confirmation', Usercontroller.userConfirmation)
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
+router.patch('/password', CheckAuth, Usercontroller.updatePassword)
 router.delete('/:id', Usercontroller.deleteUser);
 
 

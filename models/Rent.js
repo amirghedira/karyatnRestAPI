@@ -9,8 +9,9 @@ const RentSchema = new mongoose.Schema({
     from: { type: Date, required: true },
     to: { type: Date, required: true },
     daterent: { type: Date, required: true },
-    validated: { type: Boolean, default: false },
-    active: { type: Boolean, default: false }
+    validated: { type: Boolean, default: false },// represents whether the manager of the car accepted the request or not
+    active: { type: Boolean, default: false }, // represents whether the rents is beening consummed by a client or not
+    ended: { type: Boolean, default: false } // represents whether a rent is consumed or not
 })
 
 

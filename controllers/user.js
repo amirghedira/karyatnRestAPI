@@ -150,7 +150,7 @@ exports.sendConfirmation = (req, res) => {
                 sendMail(user.email,
                     "Email Confirmation",
                     `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
-                res.status(200).json({ message: 'Email sent to' + user.email })
+                res.status(200).json({ message: 'Email sent' })
             } else
                 res.status(404).json({ message: 'User not found' })
 
@@ -275,7 +275,23 @@ exports.updateUserInfo = (req, res) => {
         })
 
 }
+exports.updatePassword = async (req, res) => {
+    try {
+        let user = await User.findOne({ _id: req.user._id })
+        let result = await bcrypt.compare(req.body.oldPassword, user.password)
+        if (result) {
+            user.password = await bcrypt.hash(req.body.newPassword, 11);
+            await user.save()
+            res.status(200).json({ message: 'Password successfully updated' })
+            return;
+        }
+        res.status(400).json({ message: 'Passwords didn\'t match' })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 
+
+}
 exports.updateUserImage = (req, res) => {
     User.findOne({ _id: req.user._id })
         .then(user => {

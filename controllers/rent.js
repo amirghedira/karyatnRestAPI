@@ -22,7 +22,7 @@ exports.sendRequest = (req, res, next) => {
                     .then(rents => {
                         let validdate = { state: true, fromdate: null, todate: null };
                         rents.forEach(rent => {
-                            if ((new Date(req.body.fromdate).getTime() <= new Date(rent.to).getTime() && new Date(req.body.fromdate).getTime() >= new Date(rent.from).getTime())) {
+                            if (!rent.ended && new Date(req.body.fromdate).getTime() <= new Date(rent.to).getTime() && new Date(req.body.fromdate).getTime() >= new Date(rent.from).getTime()) {
                                 validdate.state = false;
                                 validdate.fromdate = rent.from
                                 validdate.todate = rent.to
@@ -85,6 +85,7 @@ exports.endRent = (req, res) => {
     Rent.findOne({ _id: req.params.id })
         .then(rent => {
             rent.active = false;
+            rent.ended = true;
             rent.save()
                 .then(result => {
                     Car.updateOne({ _id: rent.carid }, { $set: { state: true } })
