@@ -139,16 +139,21 @@ exports.userConfirmation = async (req, res) => {
 exports.sendConfirmation = (req, res) => {
     User.findOne({ email: req.body.email })
         .then(user => {
-            const token = jwt.sign(
-                {
-                    _id: user._id,
-                    username: user.username,
-                    email: user.email
-                }, process.env.JWT_SECRET_KEY
-            )
-            sendMail(user.email,
-                "Email Confirmation",
-                `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
+            if (user) {
+                const token = jwt.sign(
+                    {
+                        _id: user._id,
+                        username: user.username,
+                        email: user.email
+                    }, process.env.JWT_SECRET_KEY
+                )
+                sendMail(user.email,
+                    "Email Confirmation",
+                    `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
+                res.status(200).json({ message: 'Email send' })
+            } else
+                res.status(404).json({ message: 'User not found' })
+
         })
         .catch(err => {
             res.status(500).json({ message: err.message })
