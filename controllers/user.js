@@ -150,7 +150,7 @@ exports.sendConfirmation = (req, res) => {
                 sendMail(user.email,
                     "Email Confirmation",
                     `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
-                res.status(200).json({ message: 'Email send' })
+                res.status(200).json({ message: 'Email sent to' + user.email })
             } else
                 res.status(404).json({ message: 'User not found' })
 
