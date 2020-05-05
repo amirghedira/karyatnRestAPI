@@ -17,6 +17,7 @@ router.get('/:id', Usercontroller.getUser)
 router.get('/username/:username', Usercontroller.getUserbyUsername)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)
 router.post('/login', Usercontroller.UserLogin);
+router.post('/sendconfirmation', Usercontroller.sendConfirmation)
 router.post('/confirmation', Usercontroller.userConfirmation)
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.delete('/:id', Usercontroller.deleteUser);

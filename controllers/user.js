@@ -127,7 +127,6 @@ exports.getUserByusrName = (req, res) => {
 exports.userConfirmation = async (req, res) => {
 
     try {
-
         const user = jwt.verify(req.body.token, process.env.JWT_SECRET_KEY)
         await User.updateOne({ _id: user._id }, { $set: { confirmed: true } })
         res.status(200).json({ message: 'user successfully confirmed' })
@@ -135,6 +134,25 @@ exports.userConfirmation = async (req, res) => {
     } catch (error) {
         res.status(401).json({ message: 'User confirmation failed' })
     }
+}
+
+exports.sendConfirmation = (req, res) => {
+    User.findOne({ email: req.body.email })
+        .then(user => {
+            const token = jwt.sign(
+                {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email
+                }, process.env.JWT_SECRET_KEY
+            )
+            sendMail(user.email,
+                "Email Confirmation",
+                `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message })
+        })
 }
 
 exports.UserLogin = (req, res) => {
