@@ -201,32 +201,34 @@ exports.validateRequest = (req, res, next) => {
                 .then(result => {
                     User.findOne({ _id: req.user._id })
                         .then(manager => {
-                            manager.clients.push(rent.clientid)
-                            manager.save()
+                            User.updateOne({ _id: rent.clientid }, {
+                                $push: {
+                                    notifications:
+                                    {
+                                        _id: new mongoose.Types.ObjectId(),
+                                        userid: manager._id,
+                                        carid: rent.carid,
+                                        type: 'requestaccepted'
+                                    }
+                                }
+                            })
                                 .then(result => {
-                                    User.updateOne({ _id: rent.clientid }, {
-                                        $push: {
-                                            notifications:
-                                            {
-                                                _id: new mongoose.Types.ObjectId(),
-                                                userid: manager._id,
-                                                carid: rent.carid,
-                                                type: 'requestaccepted'
-                                            }
-                                        }
-                                    })
-                                        .then(result => {
-                                            res.status(200).json({ message: 'Request accepted successfully' })
-                                        })
-                                        .catch(err => {
-                                            res.status(500).json({ message: err.message })
+                                    if (!manager.clients.includes(rent.clientid)) {
+                                        manager.clients.push(rent.clientid)
+                                        manager.save()
+                                            .then(result => {
 
-                                        })
+                                                res.status(200).json({ message: 'Request accepted successfully' })
+                                            })
+                                            .catch(err => {
+                                                res.status(500).json({ message: err.message })
 
+                                            })
+                                    }
+                                    res.status(200).json({ message: 'Request accepted successfully' })
                                 })
                                 .catch(err => {
                                     res.status(500).json({ message: err.message })
-
                                 })
                         })
                         .catch(err => {
