@@ -8,6 +8,10 @@ const sendMail = require('../middleware/sendMail')
 exports.addUser = (req, res, next) => {
 
     const urls = req.files.map(file => { return file.secure_url })
+    if (urls[0])
+        console.log(urls[0])
+    else
+        urls[0] = null
     User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
         .exec()
         .then(user => {
@@ -28,7 +32,7 @@ exports.addUser = (req, res, next) => {
                             licencenum: req.body.licencenum,
                             birthday: req.body.birthday,
                             address: req.body.address,
-                            profileimg: urls[0],
+                            profileimg: urls[0] ? urls[0] : null,
                             ncinimg: urls[1],
                             joindate: new Date(),
                             notifications: [],
@@ -50,7 +54,7 @@ exports.addUser = (req, res, next) => {
                                 res.status(201).json({ message: 'User successfully added' })
                             })
                             .catch(err => {
-
+                                console.log(err)
                                 res.status(500).json({ message: err.message })
                             })
                     })
