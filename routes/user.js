@@ -19,6 +19,9 @@ router.get('/informations', CheckAuth, Usercontroller.getUserInformations)
 router.post('/login', Usercontroller.UserLogin);
 router.post('/sendconfirmation', Usercontroller.sendConfirmation)
 router.post('/confirmation', Usercontroller.userConfirmation)
+router.post('/reset-password-mail', Usercontroller.sendresetPasswordMail)//new
+router.get('/reset-password-auhorization/:token', Usercontroller.confirmPasswordReset) //new
+router.patch('/reset-userpassword/:token', Usercontroller.resetPassword) //new
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.patch('/password', CheckAuth, Usercontroller.updatePassword)
 router.delete('/:id', Usercontroller.deleteUser);

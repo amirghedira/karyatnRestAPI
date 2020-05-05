@@ -123,7 +123,43 @@ exports.getUserByusrName = (req, res) => {
 
         })
 }
+exports.sendresetPasswordMail = async (req, res) => {
+    let user = await User.findOne({ email: req.body.email });
+    if (user) {
+        const token = jwt.sign(
+            {
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            }, process.env.JWT_SECRET_KEY
+        )
+        sendMail(user.email,
+            "Reset your password",
+            `please click this <a href=http://localhost:4200/resetpassword/${token}>Link<a> to reset your password`)
+        res.status(200).json({ message: 'Email sent' })
 
+    }
+    res.status(404).json({ message: 'User with this email not found' })
+}
+exports.confirmPasswordReset = async (req, res) => {
+
+    try {
+        jwt.verify(req.params.token, process.env.JWT_SECRET_KEY);
+        res.status(200).json({ message: 'User is valide' });
+    } catch (error) {
+        res.status(401).json({ message: 'user isn\'t valide' });
+    }
+}
+exports.resetPassword = async (req, res) => {
+    try {
+        let decodeduser = jwt.verify(req.params.token, process.env.JWT_SECRET_KEY)
+        let hashedpw = await bcrypt.hash(req.body.newpassword, 11);
+        await User.updateOne({ _id: decodeduser._id }, { $set: { password: hashedpw } })
+        res.status(200).json({ message: 'User password successfully updated' })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 exports.userConfirmation = async (req, res) => {
 
     try {
