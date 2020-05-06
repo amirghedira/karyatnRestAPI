@@ -312,8 +312,9 @@ exports.deleteNotifications = async (req, res, next) => {
 exports.getManagers = async (req, res) => {
     try {
 
-        const managers = User.find({ access: 'a' })
+        const managers = await User.find({ access: 'a' })
         res.status(200).json({ managers: managers })
+
     } catch (error) {
 
         res.status(500).json({ message: error.message })
