@@ -8,8 +8,6 @@ const checkAuth = require('../middleware/checkAuth')
 
 router.get('/allcars', CarControllers.getallcars)
 
-router.delete('/delete/:id', CarControllers.deleteForme)
-
 router.get('/', checkAuth, CarControllers.getCars);
 
 router.patch('/freecar/:id', checkAuth, CarControllers.toFreeCar);

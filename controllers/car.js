@@ -6,270 +6,187 @@ const imageName = require('../middleware/imageName')
 
 
 
-exports.addCar = (req, res) => {
-    Car.findOne({ carnumber: req.body.carnumber })
-        .exec()
-        .then(car => {
-            if (!car) {
-                const imageurls = req.files.map(file => { return file.secure_url })
-                User.findOne({ _id: req.user._id })
-                    .exec()
-                    .then(user => {
-                        const newcar = new Car({
-                            carnumber: req.body.carnumber,
-                            ncinowner: req.body.ncinowner,
-                            brand: req.body.brand,
-                            color: req.body.color,
-                            price: req.body.price,
-                            transmission: req.body.transmission,
-                            climatisation: req.body.climatisation,
-                            doorscount: req.body.doorscount,
-                            seatscount: req.body.seatscount,
-                            images: imageurls,
-                            ownerid: req.user._id,
-                            address: user.address
-                        })
-                        newcar.save()
-                            .then(result => {
-                                user.cars.push(newcar)
-                                user.save()
-                                    .then(result => {
+exports.addCar = async (req, res) => {
 
-                                        res.status(200).json({ message: 'added successfully' })
-                                    })
-                                    .catch(err => {
-                                        res.status(500).json({ message: err.message })
+    try {
 
-                                    })
-                            })
-                            .catch(err => {
-
-                                res.status(500).json({ message: err.message })
-
-                            })
-                    })
-                    .catch(err => {
-
-                        res.status(500).json({ message: err.message })
-
-                    })
-            } else {
-
-                res.status(409).json({ message: 'Car already exist' })
-            }
-        })
-        .catch(err => {
-
-            res.status(500).json({ message: err.message })
-        })
-
-}
-
-
-exports.getFreeCars = (req, res, next) => {
-    User.findOne({ _id: req.user._id })
-        .populate('cars')
-        .exec()
-        .then(user => {
-            let freecars = []
-            user.cars.forEach(car => {
-                if (car.state)
-                    freecars.push(car)
+        const car = await Car.findOne({ carnumber: req.body.carnumber })
+        if (!car) {
+            const imageurls = req.files.map(file => { return file.secure_url })
+            const user = await User.findOne({ _id: req.user._id })
+            const newcar = new Car({
+                carnumber: req.body.carnumber,
+                ncinowner: req.body.ncinowner,
+                brand: req.body.brand,
+                color: req.body.color,
+                price: req.body.price,
+                transmission: req.body.transmission,
+                climatisation: req.body.climatisation,
+                doorscount: req.body.doorscount,
+                seatscount: req.body.seatscount,
+                images: imageurls,
+                ownerid: req.user._id,
+                address: user.address
             })
-            res.status(200).json({ freecars: freecars })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
+            await newcar.save()
+            user.cars.push(newcar)
+            await user.save()
+            res.status(200).json({ message: 'added successfully' })
+            return;
 
-        })
+        }
 
+        res.status(409).json({ message: 'Car already exist' })
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+
+    }
 }
 
+exports.getFreeCars = async (req, res, next) => {
+    try {
 
-exports.getallcars = (req, res) => {
-    Car.find()
-        .exec()
-        .then(cars => {
-            res.status(200).json({ cars: cars })
+        const user = await User.findOne({ _id: req.user._id }).populate('cars')
+        let freecars = []
+        user.cars.forEach(car => {
+            if (car.state)
+                freecars.push(car)
         })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-        })
-}
-exports.getCars = (req, res, next) => {
-    User.findOne({ _id: req.user._id })
-        .populate('cars')
-        .exec()
-        .then(user => {
-            res.status(200).json({ cars: user.cars })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
+        res.status(200).json({ freecars: freecars })
+    } catch (error) {
 
-        })
-
-}
-exports.getCar = (req, res, next) => {
-
-    Car.findOne({ _id: req.params.id })
-        .exec()
-        .then(car => {
-            res.status(200).json({ car: car })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-        })
-
+        res.status(500).json({ message: error.message })
+    }
 }
 
-exports.getRentedCars = (req, res, next) => {
-    User.findOne({ _id: req.user._id })
-        .populate('cars')
-        .exec()
-        .then(user => {
-            let rentedcars = []
-            user.cars.forEach(car => {
-                if (!car.state)
-                    rentedcars.push(car)
+exports.getallcars = async (req, res) => {
+
+    try {
+
+        const cars = await Car.find()
+        res.status(200).json({ cars: cars })
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.getCars = async (req, resq) => {
+    try {
+
+        const user = User.findOne({ _id: req.user._id }).populate('cars')
+        res.status(200).json({ cars: user.cars })
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.getCar = async (req, res) => {
+
+    try {
+
+        const car = Car.findOne({ _id: req.params.id })
+        res.status(200).json({ car: car })
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.getRentedCars = async (req, res, next) => {
+
+    try {
+
+        const user = User.findOne({ _id: req.user._id }).populate('cars')
+        let rentedcars = []
+        user.cars.forEach(car => {
+            if (!car.state)
+                rentedcars.push(car)
+        })
+        res.status(200).json({ rentedcars: rentedcars })
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.deleteCar = async (req, res) => {
+
+    try {
+
+        const user = await User.findOne({ _id: req.user._id }).populate('cars')
+        let usercarsid = user.cars.map(car => { return car._id })
+        if (usercarsid.includes(req.params.id)) {
+            const index = usercarsid.findIndex(carid => { return carid.toString() === req.params.id })
+            user.cars[index].images.forEach(image => {
+
+                cloudinary.uploader.destroy(imageName(image), (result, err) => {
+                    if (err)
+                        res.status(500).json({ error: err })
+                });
             })
-            res.status(200).json({ rentedcars: rentedcars })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
+            user.cars.splice(index, 1)
+            await user.save()
+            await Car.deleteOne({ _id: req.params.id })
+            await Rent.deleteMany({ carid: req.params.id })
+            res.status(200).json({ message: 'car successfully deleted' })
+            return;
+        }
 
-        })
+        res.status(404).json({ message: 'car not found' })
+    } catch (error) {
 
+        res.status(500).json({ message: error.message })
+    }
 }
 
-exports.updateState = (req, res, next) => {
+exports.toFreeCar = async (req, res) => {
 
-    Car.updateOne({ _id: req.params.id }, { $set: { state: false } })
-
-        .then(result => {
-            res.status(200).json({ message: 'done' })
+    try {
+        const user = await User.findOne({ _id: req.user._id })
+        const index = user.cars.findIndex(carid => {
+            return carid.toString() === req.params.id
         })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
+        if (index => 0) {
+            await Car.updateOne({ _id: req.params.id }, { $set: { state: true } })
+            res.status(200).json({ message: 'car successfully updated' })
+            return;
 
-        })
+
+        }
+
+        res.status(404).json({ message: 'car not found' })
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
 }
 
+exports.getCarHistory = async (req, res) => {
 
-exports.deleteForme = (req, res, next) => {
-    Car.deleteOne({ _id: req.params.id })
-        .exec()
-        .then(result => {
-            res.status(200).json('done')
+    try {
 
-        })
-        .catch(err => {
-            res.status(500).json('eroor')
-        })
+        let histories = await Rent.find({ carnumber: req.params.carnumber })
+        res.status(200).json({ histories: histories })
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
 }
 
-exports.deleteCar = (req, res, next) => {
+exports.getCarsCount = async (req, res, next) => {
 
-    User.findOne({ _id: req.user._id })
-        .populate('cars')
-        .exec()
-        .then(user => {
-            let carsid = user.cars.map(car => { return car._id })
-            if (carsid.includes(req.params.id)) {
-                const index = carsid.findIndex(carid => { return carid.toString() === req.params.id })
-                if (index >= 0) {
-                    user.cars[index].images.forEach(image => {
+    try {
 
-                        cloudinary.uploader.destroy(imageName(image), (result, err) => {
-                            if (err)
-                                res.status(500).json({ error: err })
-                        });
-                    })
-                    user.cars.splice(index, 1)
-                    user.save()
-                        .then(result => {
+        const count = await Car.countDocuments({ ncinowner: req.params.ncinowner })
+        res.status(200).json({ count: count })
 
-                            Car.deleteOne({ _id: req.params.id })
-                                .exec()
-                                .then(result => {
-                                    res.status(200).json({ message: result })
-                                })
-                                .catch(err => {
-                                    res.status(500).json({ message: err.message })
+    } catch (error) {
 
-                                })
-                        })
-                        .catch(err => {
-                            res.status(500).json({ message: err.message })
-
-                        })
-                }
-
-
-            }
-            else {
-
-                res.status(404).json({ message: 'car not found' })
-            }
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-
-        })
-
-}
-
-
-exports.toFreeCar = (req, res, next) => {
-    User.findOne({ _id: req.user._id })
-        .exec()
-        .then(user => {
-            const index = user.cars.findIndex(carid => {
-                return carid.toString() === req.params.id
-            })
-            if (index => 0) {
-                Car.updateOne({ _id: req.params.id }, { $set: { state: true } })
-                    .exec()
-                    .then(result => {
-                        res.status(200).json({ message: 'car successfully updated' })
-                    })
-                    .catch(err => {
-                        res.status(500).json({ message: err.message })
-
-                    })
-
-            } else {
-                res.status(404).json({ message: 'car not found' })
-
-            }
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-
-        })
-
-}
-exports.getCarHistory = (req, res, next) => {
-
-    Rent.find({ carnumber: req.params.carnumber })
-        .exec()
-        .then(histories => {
-            res.status(200).json({ histories: histories })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-        })
-
-}
-
-exports.getCarsCount = (req, res, next) => {
-
-    Car.countDocuments({ ncinowner: req.params.ncinowner })
-        .exec()
-        .then(count => {
-            res.status(200).json({ count: count })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-        })
-
+        res.status(500).json({ message: error.message })
+    }
 }

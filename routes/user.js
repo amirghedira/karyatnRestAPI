@@ -14,9 +14,8 @@ router.patch('/userimage', CheckAuth, cloudinary.parser.single('userimage'), Use
 router.delete('/allnotifications/:id', Usercontroller.deleteNotifications)
 router.get('/clients', CheckAuth, Usercontroller.getClients)
 router.delete('/notifications/:id', CheckAuth, Usercontroller.deleteNotification)
-router.get('/:id', Usercontroller.getUser)
-router.get('/username/:username', Usercontroller.getUserbyUsername)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)
+router.get('/:id', Usercontroller.getUser)
 router.post('/login', Usercontroller.UserLogin);
 router.post('/sendconfirmation', Usercontroller.sendConfirmation)
 router.post('/confirmation', Usercontroller.userConfirmation)
@@ -25,8 +24,6 @@ router.get('/reset-password-auhorization/:token', Usercontroller.confirmPassword
 router.patch('/reset-userpassword/:token', Usercontroller.resetPassword) //new
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.patch('/password', CheckAuth, Usercontroller.updatePassword)
-//router.patch('/clientclear/:id', Usercontroller.clearClients)
-router.delete('/:id', Usercontroller.deleteUser);
 
 
 
