@@ -5,7 +5,8 @@ const carRoutes = require('./routes/car');
 const rentRoutes = require('./routes/rent');
 const clientRoutes = require('./routes/user');
 const mongoose = require('mongoose');
-
+const nodemailer = require('nodemailer')
+const nodemailMailGun = require('nodemailer-mailgun-transport')
 
 mongoose.connect(process.env.MONGO_INFO, {
     useUnifiedTopology: true,
@@ -24,23 +25,27 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-app.get('/preview', (req, res) => {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const msg = {
-        from: "karyatn@com",
-        to: "amirghedira06@gmail.com",
-        subject: "a test",
-        html: `<b>a test here</b>`
-    };
-    sgMail
-        .send(msg)
-        .then(() => { }, error => {
-            console.error(error);
+app.get('/preview', async (req, res) => {
 
-            if (error.response) {
-                console.error(error.response.body)
-            }
+    const auth = {
+        auth: {
+            api_key: process.env.MAILGUN_API_KEY,
+            domain: process.evn.MAILGUN_DOMAIN
+        }
+    }
+    let transporter = nodemailer.createTransport(nodemailMailGun(auth));
+
+
+    try {
+        let info = await transporter.sendMail({
+            from: process.env.USER_MAIL,
+            to: mail,
+            subject: subject,
+            html: `<b>${content}</b>`
         });
+    } catch (error) {
+        console.log(error)
+    }
 
 })
 

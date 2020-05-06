@@ -23,22 +23,3 @@ module.exports = async (mail, subject, content) => {
     }
 
 }
-// const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-// module.exports = async (mail, subject, content) => {
-//     const msg = {
-//         from: process.env.USER_MAIL,
-//         to: mail,
-//         subject: subject,
-//         html: `<b>${content}</b>`
-//     };
-//     sgMail
-//         .send(msg)
-//         .then(() => { }, error => {
-//             console.error(error);
-
-//             if (error.response) {
-//                 console.error(error.response.body)
-//             }
-//         });
-// }
