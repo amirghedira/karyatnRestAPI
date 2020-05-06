@@ -27,7 +27,7 @@ app.get('/preview', async (req, res) => {
     const auth = {
         auth: {
             api_key: process.env.MAILGUN_API_KEY,
-            domain: process.evn.MAILGUN_DOMAIN
+            domain: process.env.MAILGUN_DOMAIN
         }
     }
     let transporter = nodemailer.createTransport(nodemailMailGun(auth));
