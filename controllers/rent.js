@@ -118,7 +118,7 @@ exports.getUnValidatedRequests = (req, res) => {
 }
 
 exports.getReservations = (req, res) => {
-    Rent.find({ $and: [{ ownerid: req.user._id }, { validated: true }] })
+    Rent.find({ $and: [{ ownerid: req.user._id }, { validated: true }, { ended: false }] })
         .then(reservations => {
             res.status(200).json({ reservations: reservations })
         })
