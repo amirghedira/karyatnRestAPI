@@ -21,7 +21,28 @@ app.all("/*", function (req, res, next) {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+app.get('/preview', (req, res) => {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+        from: "karyatn@com",
+        to: "amirghedira06@gmail.com",
+        subject: "a test",
+        html: `<b>a test here</b>`
+    };
+    sgMail
+        .send(msg)
+        .then(() => { }, error => {
+            console.error(error);
+
+            if (error.response) {
+                console.error(error.response.body)
+            }
+        });
+
+})
 
 app.use('/car', carRoutes);
 app.use('/rent', rentRoutes);
