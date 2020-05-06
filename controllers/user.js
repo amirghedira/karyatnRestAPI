@@ -83,7 +83,7 @@ exports.getUsers = (req, res) => {
 
 exports.getClients = (req, res) => {
 
-    User.find({ _id: req.user._id })
+    User.findOne({ _id: req.user._id })
         .populate('clients')
         .exec()
         .then(user => {
