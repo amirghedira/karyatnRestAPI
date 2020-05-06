@@ -18,8 +18,7 @@ router.get('/freecars', checkAuth, CarControllers.getFreeCars);
 
 router.get('/rentedcars', checkAuth, CarControllers.getRentedCars);
 
-router.get('/history', CarControllers.getCarHistory)
-
+router.get('/history/:carnumber', CarControllers.getCarHistory)
 
 router.get('/:id', CarControllers.getCar);
 
