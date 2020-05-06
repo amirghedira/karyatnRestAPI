@@ -37,14 +37,15 @@ app.get('/preview', async (req, res) => {
 
 
     try {
-        let info = await transporter.sendMail({
+        await transporter.sendMail({
             from: process.env.USER_MAIL,
             to: mail,
             subject: subject,
             html: `<b>${content}</b>`
         });
+        res.status(200).json({ message: "done" })
     } catch (error) {
-        console.log(error)
+        res.status(400).json({ message: "nop" })
     }
 
 })
