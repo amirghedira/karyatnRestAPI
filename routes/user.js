@@ -12,6 +12,7 @@ router.post('/', cloudinary.parser.array('userimages', 3), Usercontroller.addUse
 router.get('/bytoken', CheckAuth, Usercontroller.getUserbyToken)
 router.patch('/userimage', CheckAuth, cloudinary.parser.single('userimage'), Usercontroller.updateUserImage);
 router.delete('/allnotifications/:id', Usercontroller.deleteNotifications)
+router.get('/clients', CheckAuth, Usercontroller.getClients)
 router.delete('/notifications/:id', CheckAuth, Usercontroller.deleteNotification)
 router.get('/:id', Usercontroller.getUser)
 router.get('/username/:username', Usercontroller.getUserbyUsername)
@@ -24,7 +25,7 @@ router.get('/reset-password-auhorization/:token', Usercontroller.confirmPassword
 router.patch('/reset-userpassword/:token', Usercontroller.resetPassword) //new
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.patch('/password', CheckAuth, Usercontroller.updatePassword)
-router.patch('/clientclear/:id', Usercontroller.clearClients)
+//router.patch('/clientclear/:id', Usercontroller.clearClients)
 router.delete('/:id', Usercontroller.deleteUser);
 
 

@@ -81,6 +81,20 @@ exports.getUsers = (req, res) => {
         })
 }
 
+exports.getClients = (req, res) => {
+
+    User.find({ _id: req.user._id })
+        .populate('clients')
+        .exec()
+        .then(user => {
+            res.status(200).json({ clients: user.clients })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message })
+
+        })
+}
+
 
 exports.getUsersWithCars = (req, res) => {
     User.find({ access: 'a' })
