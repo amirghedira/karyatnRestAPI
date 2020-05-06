@@ -141,6 +141,16 @@ exports.sendresetPasswordMail = async (req, res) => {
     }
     res.status(404).json({ message: 'User with this email not found' })
 }
+exports.clearClients = async (req, res) => {
+
+    try {
+        await User.updateOne({ _id: req.params.id }, { $set: { clients: [] } })
+        res.status(200).json({ message: 'done' })
+    } catch (error) {
+        console.log(error)
+    }
+
+}
 exports.confirmPasswordReset = async (req, res) => {
 
     try {

@@ -22,7 +22,7 @@ exports.sendRequest = (req, res, next) => {
                     .then(rents => {
                         let validdate = { state: true, fromdate: null, todate: null };
                         rents.forEach(rent => {
-                            if (!rent.ended && new Date(req.body.fromdate).getTime() <= new Date(rent.to).getTime() && new Date(req.body.fromdate).getTime() >= new Date(rent.from).getTime()) {
+                            if (!rent.ended && rent.validated && new Date(req.body.fromdate).getTime() <= new Date(rent.to).getTime() && new Date(req.body.fromdate).getTime() >= new Date(rent.from).getTime()) {
                                 validdate.state = false;
                                 validdate.fromdate = rent.from
                                 validdate.todate = rent.to
