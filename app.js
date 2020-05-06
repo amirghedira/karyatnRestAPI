@@ -22,9 +22,6 @@ app.all("/*", function (req, res, next) {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 app.get('/preview', async (req, res) => {
 
     const auth = {
@@ -38,10 +35,10 @@ app.get('/preview', async (req, res) => {
 
     try {
         await transporter.sendMail({
-            from: process.env.USER_MAIL,
-            to: mail,
-            subject: subject,
-            html: `<b>${content}</b>`
+            from: "karyatn.com",
+            to: "amirghedira06@gmail.com",
+            subject: "nothing",
+            html: `<b>nothing</b>`
         });
         res.status(200).json({ message: "done" })
     } catch (error) {
