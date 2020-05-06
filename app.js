@@ -42,7 +42,7 @@ app.get('/preview', async (req, res) => {
         });
         res.status(200).json({ message: "done" })
     } catch (error) {
-        res.status(400).json({ message: "nop" })
+        res.status(400).json({ message: error.message })
     }
 
 })
