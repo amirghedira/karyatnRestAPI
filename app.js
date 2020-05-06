@@ -5,8 +5,7 @@ const carRoutes = require('./routes/car');
 const rentRoutes = require('./routes/rent');
 const clientRoutes = require('./routes/user');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer')
-const nodemailMailGun = require('nodemailer-mailgun-transport')
+
 
 mongoose.connect(process.env.MONGO_INFO, {
     useUnifiedTopology: true,
@@ -22,30 +21,7 @@ app.all("/*", function (req, res, next) {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.get('/preview', async (req, res) => {
 
-    const auth = {
-        auth: {
-            api_key: process.env.MAILGUN_API_KEY,
-            domain: process.env.MAILGUN_DOMAIN
-        }
-    }
-    let transporter = nodemailer.createTransport(nodemailMailGun(auth));
-
-
-    try {
-        await transporter.sendMail({
-            from: "karyatn.com",
-            to: "amirghedira06@gmail.com",
-            subject: "nothing",
-            html: `<b>nothing</b>`
-        });
-        res.status(200).json({ message: "done" })
-    } catch (error) {
-        res.status(400).json({ message: error.message })
-    }
-
-})
 
 app.use('/car', carRoutes);
 app.use('/rent', rentRoutes);
