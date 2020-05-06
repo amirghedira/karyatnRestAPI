@@ -77,7 +77,7 @@ exports.getallcars = async (req, res) => {
 exports.getCars = async (req, resq) => {
     try {
 
-        const user = User.findOne({ _id: req.user._id }).populate('cars')
+        const user = await User.findOne({ _id: req.user._id }).populate('cars')
         res.status(200).json({ cars: user.cars })
     } catch (error) {
 
@@ -89,7 +89,7 @@ exports.getCar = async (req, res) => {
 
     try {
 
-        const car = Car.findOne({ _id: req.params.id })
+        const car = await Car.findOne({ _id: req.params.id })
         res.status(200).json({ car: car })
     } catch (error) {
 
@@ -101,7 +101,7 @@ exports.getRentedCars = async (req, res, next) => {
 
     try {
 
-        const user = User.findOne({ _id: req.user._id }).populate('cars')
+        const user = await User.findOne({ _id: req.user._id }).populate('cars')
         let rentedcars = []
         user.cars.forEach(car => {
             if (!car.state)
