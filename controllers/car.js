@@ -4,7 +4,7 @@ const User = require('../models/User')
 const cloudinary = require('../middleware/cloudinary')
 const imageName = require('../middleware/imageName')
 const { newCarPosted } = require('../middleware/sendMail')
-
+const mongoose = require('mongoose')
 exports.addCar = async (req, res) => {
 
     try {
