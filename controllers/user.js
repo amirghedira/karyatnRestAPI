@@ -160,10 +160,10 @@ exports.sendConfirmation = async (req, res) => {
                     email: user.email
                 }, process.env.JWT_SECRET_KEY
             )
-            sendMail(user.email,
-                "Email Confirmation",
-                `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
+            WelcomeEmail(user.email,
+                user.username, `http://localhost:4200/confirmation/${token}`)
             res.status(200).json({ message: 'Email sent' })
+
             return;
         }
         res.status(404).json({ message: 'User not found' })
