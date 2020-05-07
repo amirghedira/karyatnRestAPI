@@ -66,8 +66,8 @@ exports.sendRequest = async (req, res, next) => {
 
 exports.endRent = async (req, res) => {
 
+    //tofix
     try {
-
         let rent = await Rent.findOne({ _id: req.params.id })
         rent.active = false;
         rent.ended = true;
@@ -173,6 +173,7 @@ exports.activateRent = async (req, res) => {
 
 exports.validateRequest = async (req, res, next) => {
 
+    //tofix
     try {
         let rent = await Rent.findOne({ _id: req.body.rentid }).populate('carid')
         rent.validated = true;
