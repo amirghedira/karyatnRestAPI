@@ -1,8 +1,12 @@
 const nodemailer = require('nodemailer');
 const nodemailMailGun = require('nodemailer-mailgun-transport')
+const hjs = require('hogan.js')
+const fs = require('fs');
 
 
-module.exports = async (mail, subject, content) => {
+exports.WelcomeEmail = async (mail, subject, content) => {
+    const template = fs.readFileSync('./views/email.hjs', 'utf-8')
+    const compiledTemplate = hjs.compile(template)
     const auth = {
         auth: {
             api_key: process.env.MAILGUN_API_KEY,
@@ -15,12 +19,10 @@ module.exports = async (mail, subject, content) => {
             from: '"Karyatn" <karyatn@mail.com>',
             to: mail,
             subject: subject,
-            html: `<b>${content}</b>`
+            html: compiledTemplate.render({ username: "amir", activateLink: "http://localhost:4020" })
         });
-        res.status(200).json({ message: "done" })
     } catch (error) {
         console.log(error)
-        res.status(400).json({ message: error.message })
     }
 
 }

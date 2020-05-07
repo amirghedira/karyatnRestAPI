@@ -67,7 +67,7 @@ exports.endRent = async (req, res) => {
 
     try {
 
-        let rent = Rent.findOne({ _id: req.params.id })
+        let rent = await Rent.findOne({ _id: req.params.id })
         rent.active = false;
         rent.ended = true;
         await rent.save();
