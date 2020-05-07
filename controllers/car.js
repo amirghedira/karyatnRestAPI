@@ -88,7 +88,7 @@ exports.getallcars = async (req, res) => {
     }
 }
 
-exports.getCars = async (req, resq) => {
+exports.getCars = async (req, res) => {
     try {
 
         const user = await User.findOne({ _id: req.user._id }).populate('cars')

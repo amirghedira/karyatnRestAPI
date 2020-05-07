@@ -6,10 +6,10 @@ const checkAuth = require('../middleware/checkAuth')
 
 
 
-router.get('/allcars', CarControllers.getallcars)
 
 router.get('/', checkAuth, CarControllers.getCars);
 
+router.get('/allcars', CarControllers.getallcars)
 router.patch('/freecar/:id', checkAuth, CarControllers.toFreeCar);
 
 router.post('/', checkAuth, cloudinary.parser.array('carimages', 8), CarControllers.addCar);
