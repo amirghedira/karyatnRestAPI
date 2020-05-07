@@ -107,6 +107,8 @@ exports.sendresetPasswordMail = async (req, res) => {
             sendMail(user.email,
                 "Reset your password",
                 `please click this <a href=http://localhost:4200/resetpassword/${token}>Link<a> to reset your password`)
+            WelcomeEmail(user.email,
+                user.username, `http://localhost:4200/confirmation/${token}`)
             res.status(200).json({ message: 'Email sent' })
             return;
 
