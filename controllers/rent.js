@@ -2,7 +2,7 @@ const Rent = require('../models/Rent');
 const Car = require('../models/Car');
 const User = require('../models/User')
 const mongoose = require('mongoose')
-
+const { SendRequest, rentEnded, requestAccepted, declinedRequest } = require('../middleware/sendMail')
 
 exports.getRents = async (req, res) => {
     try {
@@ -37,8 +37,8 @@ exports.sendRequest = async (req, res, next) => {
                     to: req.body.todate,
                     daterent: new Date().toISOString()
                 })
-                await rent.save()
-                await User.updateOne({ _id: req.params.ownerid }, {
+                const resultRent = await rent.save()
+                let manager = await User.findOneAndUpdate({ _id: req.params.ownerid }, {
                     $push: {
                         notifications: {
                             _id: new mongoose.Types.ObjectId(),
@@ -48,7 +48,8 @@ exports.sendRequest = async (req, res, next) => {
                         }
                     }
                 })
-
+                let client = await User.findOne({ _id: resultRent._doc.clientid })
+                SendRequest(manager.email, manager.username, client.username, client._id)
                 res.status(201).json({ message: 'Request successfully sent' })
                 return;
             }
@@ -71,7 +72,31 @@ exports.endRent = async (req, res) => {
         rent.active = false;
         rent.ended = true;
         await rent.save();
-        await Car.updateOne({ _id: rent.carid }, { $set: { state: true } })
+        const client = await User.findOneAndUpdate({ _id: rent.clientid }, {
+            $push: {
+                notifications: {
+                    _id: new mongoose.Types.ObjectId(),
+                    userid: rent.ownerid,
+                    carid: rent.carid,
+                    type: 'rentended'
+                }
+            }
+        })
+        const manager = await User.findOneAndUpdate({ _id: rent.ownerid }, {
+            $push: {
+                notifications: {
+                    _id: new mongoose.Types.ObjectId(),
+                    userid: rent.cliendid,
+                    carid: rent.carid,
+                    type: 'rentended'
+                }
+            }
+        })
+        const car = await Car.findOneAndUpdate({ _id: rent.carid }, { $set: { state: true } })
+
+        // rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
+        rentEnded(manager.email, manager.username, client.username, car.carnumber)
+
         res.status(200).json({ message: 'rent successfully ended' })
 
     } catch (error) {
@@ -149,21 +174,22 @@ exports.activateRent = async (req, res) => {
 exports.validateRequest = async (req, res, next) => {
 
     try {
-        let rent = await Rent.findOne({ _id: req.body.rentid })
+        let rent = await Rent.findOne({ _id: req.body.rentid }).populate('carid')
         rent.validated = true;
         await rent.save()
         let manager = await User.findOne({ _id: req.user._id })
-        await User.updateOne({ _id: rent.clientid }, {
+        let client = await User.findOneAndUpdate({ _id: rent.clientid }, {
             $push: {
                 notifications:
                 {
                     _id: new mongoose.Types.ObjectId(),
                     userid: manager._id,
-                    carid: rent.carid,
+                    carid: rent.carid._id,
                     type: 'requestaccepted'
                 }
             }
         })
+        requestAccepted(client.email, client.username, manager._id, rent.carid.carnumber, rent.daterent, manager.agencename)
         if (!manager.clients.includes(rent.clientid)) {
             manager.clients.push(rent.clientid)
             await manager.save()
@@ -184,14 +210,15 @@ exports.declineRequest = async (req, res, next) => {
     try {
 
         const rent = await Rent.findOne({ _id: req.body.rentid })
-        const user = await User.findOne({ _id: rent.clientid })
-        user.notifications.push({
+        const client = await User.findOne({ _id: rent.clientid })
+        client.notifications.push({
             _id: new mongoose.Types.ObjectId(),
             userid: rent.ownerid,
             carid: rent.carid,
             type: 'declinedrequest'
         })
-        await user.save()
+        declinedRequest(client.email, client.username, rent.ownerid, rent.carid)
+        await client.save()
         await Rent.deleteOne({ _id: req.body.rentid })
         res.status(200).json({ message: 'Request declined successfully' })
 

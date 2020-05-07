@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const cloudinary = require('../middleware/cloudinary')
 const ImageName = require('../middleware/imageName')
-const { WelcomeEmail } = require('../middleware/sendMail')
+const { WelcomeEmail, resetPasswordMail } = require('../middleware/sendMail')
 
 exports.addUser = async (req, res, next) => {
 
@@ -39,8 +39,7 @@ exports.addUser = async (req, res, next) => {
             }, process.env.JWT_SECRET_KEY
         )
 
-        WelcomeEmail(result._doc.email,
-            result._doc.username, `http://localhost:4200/confirmation/${token}`)
+        WelcomeEmail(result._doc.email, result._doc.username, token)
         res.status(201).json({ message: 'User successfully added' })
         return;
     }
@@ -105,8 +104,7 @@ exports.sendresetPasswordMail = async (req, res) => {
                 }, process.env.JWT_SECRET_KEY
             )
 
-            WelcomeEmail(user.email,
-                user.username, `http://localhost:4200/confirmation/${token}`)
+            resetPasswordMail(user.email, user.username, token)
             res.status(200).json({ message: 'Email sent' })
             return;
 
@@ -160,8 +158,7 @@ exports.sendConfirmation = async (req, res) => {
                     email: user.email
                 }, process.env.JWT_SECRET_KEY
             )
-            WelcomeEmail(user.email,
-                user.username, `http://localhost:4200/confirmation/${token}`)
+            WelcomeEmail(user.email, user.username, token)
             res.status(200).json({ message: 'Email sent' })
             return;
         }

@@ -3,8 +3,7 @@ const Rent = require('../models/Rent')
 const User = require('../models/User')
 const cloudinary = require('../middleware/cloudinary')
 const imageName = require('../middleware/imageName')
-
-
+const { newCarPosted } = require('../middleware/sendMail')
 
 exports.addCar = async (req, res) => {
 
@@ -13,7 +12,7 @@ exports.addCar = async (req, res) => {
         const car = await Car.findOne({ carnumber: req.body.carnumber })
         if (!car) {
             const imageurls = req.files.map(file => { return file.secure_url })
-            const user = await User.findOne({ _id: req.user._id })
+            const user = await User.findOne({ _id: req.user._id }).populate('clients')
             const newcar = new Car({
                 carnumber: req.body.carnumber,
                 ncinowner: req.body.ncinowner,
@@ -28,9 +27,24 @@ exports.addCar = async (req, res) => {
                 ownerid: req.user._id,
                 address: user.address
             })
-            await newcar.save()
+            const car = await newcar.save()
             user.cars.push(newcar)
             await user.save()
+            const clientIds = user.clients.map(client => { return client._id })
+            await User.updateMany({ _id: { $in: [...clientIds] } }, {
+                $push: {
+                    notifications: {
+                        _id: new mongoose.Types.ObjectId(),
+                        userid: user._id,
+                        carid: car._doc._id,
+                        type: 'newcar'
+                    }
+                }
+            })
+
+            user.clients.forEach(client => {
+                newCarPosted(client.email, client.username, car._doc._id, user.agencename)
+            })
             res.status(200).json({ message: 'added successfully' })
             return;
 
