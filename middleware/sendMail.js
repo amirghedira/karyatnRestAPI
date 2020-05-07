@@ -1,12 +1,8 @@
 const nodemailer = require('nodemailer');
 const hjs = require('hogan.js')
 const fs = require('fs');
-const auth = {
-    auth: {
-        api_key: process.env.MAILGUN_API_KEY,
-        domain: process.env.MAILGUN_DOMAIN
-    }
-}
+
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
