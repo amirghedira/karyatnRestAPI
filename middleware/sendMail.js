@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const nodemailMailGun = require('nodemailer-mailgun-transport')
 const hjs = require('hogan.js')
 const fs = require('fs');
 const auth = {
@@ -8,7 +7,13 @@ const auth = {
         domain: process.env.MAILGUN_DOMAIN
     }
 }
-let transporter = nodemailer.createTransport(nodemailMailGun(auth));
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.USER_MAIL,
+        pass: process.env.USER_PW
+    }
+});
 
 exports.WelcomeEmail = async (mail, username, link) => {
     const template = fs.readFileSync('./views/email/welcome.hjs', 'utf-8')
