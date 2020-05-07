@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const cloudinary = require('../middleware/cloudinary')
 const ImageName = require('../middleware/imageName')
-const sendMail = require('../middleware/sendMail')
+const { WelcomeEmail } = require('../middleware/sendMail')
 
 exports.addUser = async (req, res, next) => {
 
@@ -38,9 +38,9 @@ exports.addUser = async (req, res, next) => {
                 email: result._doc.email
             }, process.env.JWT_SECRET_KEY
         )
-        sendMail(result._doc.email,
-            "Email Confirmation",
-            `please click this <a href=http://localhost:4200/confirmation/${token}>Link<a> to confirm your account`)
+
+        WelcomeEmail(result._doc.email,
+            result._doc.username, `http://localhost:4200/confirmation/${token}`)
         res.status(201).json({ message: 'User successfully added' })
         return;
     }
