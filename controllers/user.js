@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Rent = require('../models/Rent')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const cloudinary = require('../middleware/cloudinary')
@@ -216,9 +217,39 @@ exports.getUserInformations = async (req, res) => {
         const user = await User.findOne({ _id: req.user._id }).select('-password')
         info.carscount = user.cars.length;
         info.clientscount = user.clients.length
+        let userRents = await Rent.find({ $and: [{ ownerid: req.user._id }, { validated: true }] })
+
+        info.activerents = 0;
+        info.inactiverents = 0;
+        info.totalrevenues = 0;
+        info.totalRents = 0;
+        info.mouthsProfits = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        info.yearsProfits = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        userRents.forEach(userRent => {
+            if (!userRent.ended) {
+
+                if (userRent.active)
+                    info.activerents++;
+                else
+                    info.inactiverents++;
+            } else {
+
+                info.totalrevenues += +userRent.totalprice
+                if (new Date().getFullYear().toString() === userRent.from.toISOString().split('-')[0]) {
+                    let month = userRent.from.toISOString().split('-')[1]
+                    if (month < 10)
+                        month = month.split('0')[1];
+                    info.mouthsProfits[month - 1] += +userRent.totalprice;
+                }
+                info.yearsProfits[new Date().getFullYear() - +userRent.from.toISOString().split('-')[0]] += +userRent.totalprice
+
+            }
+            info.totalRents++;
+        });
+
         res.status(200).json({ info: info })
     } catch (error) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ message: error.message })
 
     }
 }
