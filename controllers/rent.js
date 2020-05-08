@@ -63,46 +63,49 @@ exports.sendRequest = async (req, res, next) => {
         res.status(500).json({ message: error.message })
     }
 }
+exports.endRent = (req, res) => {
 
-exports.endRent = async (req, res) => {
-
-    //tofix
     try {
-        let rent = await Rent.findOne({ _id: req.params.id })
-        rent.active = false;
-        rent.ended = true;
-        await rent.save();
-        const client = await User.findOneAndUpdate({ _id: rent.clientid }, {
-            $push: {
-                notifications: {
-                    _id: new mongoose.Types.ObjectId(),
-                    userid: rent.ownerid,
-                    carid: rent.carid,
-                    type: 'rentended'
-                }
-            }
-        })
-        const manager = await User.findOneAndUpdate({ _id: rent.ownerid }, {
-            $push: {
-                notifications: {
-                    _id: new mongoose.Types.ObjectId(),
-                    userid: rent.cliendid,
-                    carid: rent.carid,
-                    type: 'rentended'
-                }
-            }
-        })
-        const car = await Car.findOneAndUpdate({ _id: rent.carid }, { $set: { state: true } })
-
-        // rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
-        rentEnded(manager.email, manager.username, client.username, car.carnumber)
-
-        res.status(200).json({ message: 'rent successfully ended' })
-
+        endRentHandler(req.params.id)
+        res.status(200).json({ message: 'rent ended' })
     } catch (error) {
-
         res.status(500).json({ message: error.message })
     }
+
+}
+const endRentHandler = async (rentid) => {
+
+    //tofix
+
+    let rent = await Rent.findOne({ _id: rentid })
+    rent.active = false;
+    rent.ended = true;
+    await rent.save();
+    const client = await User.findOneAndUpdate({ _id: rent.clientid }, {
+        $push: {
+            notifications: {
+                _id: new mongoose.Types.ObjectId(),
+                userid: rent.ownerid,
+                carid: rent.carid,
+                type: 'rentended'
+            }
+        }
+    })
+    const manager = await User.findOneAndUpdate({ _id: rent.ownerid }, {
+        $push: {
+            notifications: {
+                _id: new mongoose.Types.ObjectId(),
+                userid: rent.cliendid,
+                carid: rent.carid,
+                type: 'rentended'
+            }
+        }
+    })
+    const car = await Car.findOneAndUpdate({ _id: rent.carid }, { $set: { state: true } })
+
+    // rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
+    rentEnded(manager.email, manager.username, client.username, car.carnumber)
+
 }
 exports.getUnValidatedRequests = async (req, res) => {
 
@@ -136,10 +139,10 @@ exports.getActiveRents = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
-exports.activateRent = async (req, res) => {
+const activateRentHandler = async (rentid) => {
     try {
 
-        let rent = await Rent.findOne({ _id: req.params.id })
+        let rent = await Rent.findOne({ _id: rentid })
         rent.active = true
         await rent.save()
         await Car.updateOne({ _id: rent.carid }, { $set: { state: false } })
@@ -163,11 +166,9 @@ exports.activateRent = async (req, res) => {
                 }
             }
         })
-
-        res.status(200).json({ message: 'car successfully rented' })
     } catch (error) {
 
-        res.status(500).json({ message: err.message })
+        console.log(error)
     }
 }
 
@@ -190,6 +191,16 @@ exports.validateRequest = async (req, res, next) => {
                 }
             }
         })
+        if (new Date().getTime() - new Date(rent.from).getTime() >= 0) {
+            this.locationService.activateReservations(rentId).subscribe(() => { });
+        } else {
+            var time = Math.abs(
+                new Date().getTime() - new Date(rent.from).getTime()
+            );
+            setTimeout(activateRentHandler, time);
+        }
+        var time1 = Math.abs(new Date().getTime() - new Date(rent.to).getTime());
+        setTimeout(endRentHandler, time1);
         requestAccepted(client.email, client.username, manager._id, rent.carid.carnumber, rent.daterent, manager.agencename)
         if (!manager.clients.includes(rent.clientid)) {
             manager.clients.push(rent.clientid)
