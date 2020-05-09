@@ -191,15 +191,8 @@ exports.validateRequest = async (req, res, next) => {
                 }
             }
         })
-        activateRentHandler(rent._id)
-        // var time = Math.abs(
-        //     new Date().getTime() - new Date(rent.from).getTime()
-        // );
-        // setTimeout(() => {activateRentHandler(rent._id), 300000);
-
-
-        // var time1 = Math.abs(new Date().getTime() - new Date(rent.to).getTime());
-        // setTimeout(() => endRentHandle(rent._id), 600000);
+        setTimeout(() => activateRentHandler(rent._id), new Date(rent.from).getTime() - new Date().getTime());
+        setTimeout(() => endRentHandle(rent._id), new Date(rent.to).getTime() - new Date().getTime());
         requestAccepted(client.email, client.username, manager._id, rent.carid.carnumber, rent.daterent, manager.agencename)
         if (!manager.clients.includes(rent.clientid)) {
             manager.clients.push(rent.clientid)
