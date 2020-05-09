@@ -191,16 +191,15 @@ exports.validateRequest = async (req, res, next) => {
                 }
             }
         })
-        if (new Date().getTime() - new Date(rent.from).getTime() >= 0) {
-            this.locationService.activateReservations(rentId).subscribe(() => { });
-        } else {
-            var time = Math.abs(
-                new Date().getTime() - new Date(rent.from).getTime()
-            );
-            setTimeout(activateRentHandler, time);
-        }
+
+        var time = Math.abs(
+            new Date().getTime() - new Date(rent.from).getTime()
+        );
+        setTimeout(() => activateRentHandler(rent._id), 300000);
+
+
         var time1 = Math.abs(new Date().getTime() - new Date(rent.to).getTime());
-        setTimeout(endRentHandler, time1);
+        setTimeout(() => endRentHandle(rent._id), 600000);
         requestAccepted(client.email, client.username, manager._id, rent.carid.carnumber, rent.daterent, manager.agencename)
         if (!manager.clients.includes(rent.clientid)) {
             manager.clients.push(rent.clientid)
