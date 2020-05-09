@@ -184,7 +184,7 @@ exports.getCarHistory = async (req, res) => {
 
     try {
 
-        let histories = await Rent.find({ carnumber: req.params.carnumber })
+        const histories = await Rent.find({ $and: [{ carnumber: req.params.id }, { ended: true }] })
         res.status(200).json({ histories: histories })
     } catch (error) {
 

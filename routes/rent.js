@@ -13,7 +13,5 @@ router.patch('/decline', checkAuth, RentController.declineRequest)
 router.get('/unvalidated', checkAuth, RentController.getUnValidatedRequests)
 router.get('/reservations', checkAuth, RentController.getReservations)//todo
 router.get('/', RentController.getRents)
-router.get('client-history/:ncin', RentController.getClienthistory)
-router.get('client-count/:ncin', RentController.getClientCount)
 
 module.exports = router

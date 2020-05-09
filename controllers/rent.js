@@ -253,28 +253,3 @@ exports.deleteRent = async (req, res) => {
 }
 
 
-exports.getClienthistory = async (req, res, next) => {
-
-    try {
-
-        const histories = await Rent.find({ ncinoccupant: req.params.ncin })
-        res.status(200).json({ histories: histories })
-
-    } catch (error) {
-
-        res.status(500).json({ message: error.message });
-    }
-}
-
-exports.getClientCount = async (req, res, next) => {
-    try {
-
-        const count = await Rent.countDocuments({ ncinowner: req.params.ncin })
-        res.status(200).json({ count: count })
-    } catch (error) {
-
-        res.status(500).json({ message: error.message });
-    }
-
-}
-
