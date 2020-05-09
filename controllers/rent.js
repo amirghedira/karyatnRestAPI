@@ -97,7 +97,7 @@ const endRentHandler = async (rentid) => {
         $push: {
             notifications: {
                 _id: new mongoose.Types.ObjectId(),
-                userid: rent.cliendid,
+                userid: rent.clientid,
                 carid: rent.carid,
                 type: 'rentended'
             }
