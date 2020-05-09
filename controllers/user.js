@@ -198,7 +198,13 @@ exports.UserLogin = async (req, res) => {
 exports.getUserbyToken = async (req, res) => {
     if (req.user) {
         try {
-            const user = await User.findOne({ _id: req.user._id }).select('-password').populate('car')
+            const user = await User.findOne({ _id: req.user._id }).select('-password')
+                .populate({
+                    path: 'notifications',
+                    populate: {
+                        path: 'carid'
+                    }
+                })
             res.status(200).json({ user: user })
         } catch (error) {
             res.status(500).json({ message: error.message })
