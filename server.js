@@ -6,6 +6,7 @@ server.listen(process.env.PORT || 3000, () => {
 
     io.on('connection', (socket) => {
         socket.on('sendnotification', (notificationObject) => {
+            console.log(notificationObject)
             socket.broadcast.emit('sendnotification', notificationObject)
         })
     })
