@@ -21,6 +21,7 @@ app.all("/*", function (req, res, next) {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
 app.use('/car', carRoutes);
 app.use('/rent', rentRoutes);
 app.use('/user', clientRoutes);

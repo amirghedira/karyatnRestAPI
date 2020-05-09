@@ -2,6 +2,8 @@ const Rent = require('../models/Rent');
 const Car = require('../models/Car');
 const User = require('../models/User')
 const mongoose = require('mongoose')
+const io = require('socket.io-client')
+const socket = io('http://localhost:3000')
 const { SendRequest, rentEnded, requestAccepted, declinedRequest } = require('../middleware/sendMail')
 
 exports.getRents = async (req, res) => {
@@ -146,26 +148,32 @@ const activateRentHandler = async (rentid) => {
         rent.active = true
         await rent.save()
         await Car.updateOne({ _id: rent.carid }, { $set: { state: false } })
+        const ownerNotification = {
+            _id: new mongoose.Types.ObjectId(),
+            userid: rent.clientid,
+            carid: rent.carid,
+            type: 'activatedrent'
+        }
+        const clientNotification = {
+            _id: new mongoose.Types.ObjectId(),
+            userid: rent.ownerid,
+            carid: rent.carid,
+            type: 'activatedrent'
+        }
         await User.updateOne({ _id: rent.ownerid }, {
             $push: {
-                notifications: {
-                    _id: new mongoose.Types.ObjectId(),
-                    userid: rent.clientid,
-                    carid: rent.carid,
-                    type: 'activatedrent'
-                }
+                notifications: ownerNotification
             }
         })
         await User.updateOne({ _id: rent.clientid }, {
             $push: {
-                notifications: {
-                    _id: new mongoose.Types.ObjectId(),
-                    userid: rent.ownerid,
-                    carid: rent.carid,
-                    type: 'activatedrent'
-                }
+                notifications: clientNotification
             }
         })
+        socket.emit('sendnotification', { _id: rent.ownerid, notification: ownerNotification })
+        socket.emit('sendnotification', { _id: rent.clientid, notification: clientNotification })
+
+
     } catch (error) {
 
         console.log(error)

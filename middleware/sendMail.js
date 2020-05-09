@@ -19,7 +19,7 @@ exports.WelcomeEmail = async (mail, username, token) => {
             from: '"Karyatn" <karyatn@mail.com>',
             to: mail,
             subject: 'Bienvenu a karyatn',
-            html: compiledTemplate.render({ username: username, activateLink: `http://localhost:4200/confirmation/${token}` })
+            html: compiledTemplate.render({ username: username, activateLink: `${process.env.DOMAIN}/confirmation/${token}` })
         });
     } catch (error) {
         console.log(error)
@@ -35,7 +35,7 @@ exports.resetPasswordMail = async (mail, username, link) => {
             from: '"Karyatn" <karyatn@mail.com>',
             to: mail,
             subject: 'Veuillez réinitialiser votre mot de passe',
-            html: compiledTemplate.render({ username: username, activateLink: `http://localhost:4200/resetpassword/${token}` })
+            html: compiledTemplate.render({ username: username, activateLink: `${process.env.DOMAIN}/resetpassword/${token}` })
         });
     } catch (error) {
         console.log(error)
@@ -51,7 +51,7 @@ exports.newCarPosted = async (mail, username, carid, agencyname) => {
             from: '"Karyatn" <karyatn@mail.com>',
             to: mail,
             subject: `${agencyname} a ajouter une nouvelle voiture`,
-            html: compiledTemplate.render({ username: username, activateLink: `http://localhost:4200/car/${carid}`, agency: agencyname })
+            html: compiledTemplate.render({ username: username, activateLink: `${process.env.DOMAIN}/car/${carid}`, agency: agencyname })
         });
     } catch (error) {
         console.log(error)
@@ -69,9 +69,9 @@ exports.SendRequest = async (mail, username, clientname, clientid) => {
             subject: `${clientname} vous a envoyer une demande de location`,
             html: compiledTemplate.render({
                 username: username,
-                clientlink: `http://localhost:4200/profile/${clientid}`,
+                clientlink: `${process.env.DOMAIN}/profile/${clientid}`,
                 clientname: clientname,
-                requestslink: `http://localhost:4200/admincp/ajout-location`
+                requestslink: `${process.env.DOMAIN}/admincp/ajout-location`
             })
         });
     } catch (error) {
@@ -88,7 +88,7 @@ exports.rentEnded = async (mail, username, clientname, carnumber) => {
             from: '"Karyatn" <karyatn@mail.com>',
             to: mail,
             subject: `la location de la voiture ${carnumber} a terminer`,
-            html: compiledTemplate.render({ username: username, locationlink: `http://localhost:4200/admincp/history`, clientname: clientname })
+            html: compiledTemplate.render({ username: username, locationlink: `${process.env.DOMAIN}/admincp/history`, clientname: clientname })
         });
     } catch (error) {
         console.log(error)
@@ -107,7 +107,7 @@ exports.requestAccepted = async (mail, username, managerid, carnumber, requestda
             html: compiledTemplate.render(
                 {
                     username: username,
-                    managerlink: `http://localhost:4200/profile/${managerid}`,
+                    managerlink: `${process.env.DOMAIN}/profile/${managerid}`,
                     agencyname: agencyname,
                     requestdate: requestdate,
                     carnumber: carnumber
@@ -129,8 +129,8 @@ exports.declinedRequest = async (mail, username, managerid, carid, carnumber, re
             subject: `Votre demande de location a été rejeter`,
             html: compiledTemplate.render({
                 username: username,
-                managerlink: `http://localhost:4200/profile/${managerid}`,
-                carlink: `http://localhost:4200/car/${carid}`,
+                managerlink: `${process.env.DOMAIN}/profile/${managerid}`,
+                carlink: `${process.env.DOMAIN}/car/${carid}`,
                 carnumber: carnumber,
                 requestdate: requestdate,
                 agencyname: agencyname
@@ -153,7 +153,7 @@ exports.rentActivatedMail = async (mail, username, rentenddate, carnumber, carid
             html: compiledTemplate.render({
                 username: username,
                 carnumber: carnumber,
-                carlink: `http://localhost:4200/car/${carid}`,
+                carlink: `${process.env.DOMAIN}/car/${carid}`,
                 rentenddate: rentenddate
             })
         });
