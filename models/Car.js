@@ -14,6 +14,7 @@ const CarSchema = new mongoose.Schema({
     state: { type: Boolean, default: true },
     images: [{ type: String }],
     address: { type: String, required: true },
+    addedDate: { type: String, default: new Date() },
     ownerid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 
 })
