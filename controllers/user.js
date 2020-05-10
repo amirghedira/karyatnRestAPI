@@ -201,7 +201,6 @@ exports.getUserWithToken = (req, res) => {
             .populate([{
                 path: 'notifications.userid', select: 'name surname profileimg'
             }, { path: 'notifications.carid', select: 'brand carnumber images' }])
-            .select('notifications.carid.brand')
             .exec()
             .then(user => {
                 res.status(200).json({ user: user })
