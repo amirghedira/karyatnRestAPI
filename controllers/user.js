@@ -194,15 +194,23 @@ exports.UserLogin = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
-
-exports.getUserWithToken = async (req, res) => {
+//user : surname name profileimage , car: brand serie image
+exports.getUserWithToken = (req, res) => {
     if (req.user) {
-        try {
-            const user = await User.findOne({ _id: req.user._id }).select('-password')
-            res.status(200).json({ user: user })
-        } catch (error) {
-            res.status(500).json({ message: error.message })
-        }
+        User.findOne({ _id: req.user._id })
+            .populate([{
+                path: 'notifications.userid', select: 'name surname profileimg'
+            }, { path: 'notifications.carid', select: 'brand carnumber images' }])
+            .select('notifications.carid.brand')
+            .exec()
+            .then(user => {
+                res.status(200).json({ user: user })
+
+            })
+            .catch(error => {
+                res.status(500).json({ message: error.message })
+
+            })
     }
     else
         res.status(401).json({ message: 'auth failed' })

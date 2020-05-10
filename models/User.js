@@ -25,7 +25,7 @@ const UserSchema = new mongoose.Schema({
             carid: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
             type: { type: String },
             read: { type: Boolean, default: false },
-            date: { type: Date, default: new Date().toISOString() }
+            date: { type: Date, default: new Date().toISOString() },
         }
     ],
     cars: [{
