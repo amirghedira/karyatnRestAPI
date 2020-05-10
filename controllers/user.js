@@ -258,7 +258,7 @@ exports.getUserArchive = async (req, res) => {
 
     try {
 
-        const archives = Rent.find({ $and: [{ ownerid: req.user._id }, { ended: true }] })
+        const archives = await Rent.find({ $and: [{ ownerid: req.user._id }, { ended: true }] })
         res.status(200).json({ archives: archives })
 
     } catch (error) {

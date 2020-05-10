@@ -158,28 +158,6 @@ exports.deleteCar = async (req, res) => {
     }
 }
 
-exports.toFreeCar = async (req, res) => {
-
-    try {
-        const user = await User.findOne({ _id: req.user._id })
-        const index = user.cars.findIndex(carid => {
-            return carid.toString() === req.params.id
-        })
-        if (index => 0) {
-            await Car.updateOne({ _id: req.params.id }, { $set: { state: true } })
-            res.status(200).json({ message: 'car successfully updated' })
-            return;
-
-
-        }
-
-        res.status(404).json({ message: 'car not found' })
-    } catch (error) {
-
-        res.status(500).json({ message: error.message })
-    }
-}
-
 exports.getCarHistory = async (req, res) => {
 
     try {
