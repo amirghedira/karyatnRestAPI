@@ -168,10 +168,12 @@ exports.sendConfirmation = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
-
 exports.UserLogin = async (req, res) => {
     try {
         const user = await User.findOne({ username: req.body.username })
+            .populate([{
+                path: 'notifications.userid', select: 'name surname profileimg'
+            }, { path: 'notifications.carid', select: 'brand carnumber images' }])
         if (user) {
             const result = await bcrypt.compare(req.body.password, user.password)
             if (result) {
