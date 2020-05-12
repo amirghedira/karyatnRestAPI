@@ -39,11 +39,12 @@ exports.sendRequest = async (req, res, next) => {
                     to: req.body.todate,
                     daterent: new Date().toISOString()
                 })
-                const resultRent = await rent.save()
+                await rent.save()
+                const client = await User.findById(req.user._id)
                 const newNotification = {
                     _id: new mongoose.Types.ObjectId(),
-                    userid: req.user._id,
-                    carid: car._id,
+                    userid: client,
+                    carid: car,
                     type: 'request'
                 }
                 let manager = await User.findOneAndUpdate({ _id: req.params.ownerid }, {
@@ -51,7 +52,6 @@ exports.sendRequest = async (req, res, next) => {
                         notifications: newNotification
                     }
                 })
-                let client = await User.findOne({ _id: resultRent._doc.clientid })
                 SendRequest(manager.email, manager.username, client.username, client._id)
                 socket.emit('sendnotification', { userid: rent.ownerid, notification: newNotification })
                 res.status(201).json({ message: 'Request successfully sent' })
@@ -81,7 +81,10 @@ const endRentHandler = async (rentid) => {
 
     //tofix
 
-    let rent = await Rent.findOne({ _id: rentid })
+    const rent = await Rent.findById(rentid)
+        .populate([{
+            path: 'clientid'
+        }, { path: 'carid' }, { path: 'ownerid' }])
     rent.active = false;
     rent.ended = true;
     await rent.save();
@@ -91,29 +94,29 @@ const endRentHandler = async (rentid) => {
         carid: rent.carid,
         type: 'rentended'
     }
-    const client = await User.findOneAndUpdate({ _id: rent.clientid }, {
+    await User.updateOne({ _id: rent.clientid._id }, {
         $push: {
             notifications: clientNewNotification
         }
     })
-    socket.emit('sendnotification', { userid: rent.clientid, notification: clientNewNotification })
+    socket.emit('sendnotification', { userid: rent.clientid._id, notification: clientNewNotification })
     const managerNewNotification = {
         _id: new mongoose.Types.ObjectId(),
         userid: rent.clientid,
         carid: rent.carid,
         type: 'rentended'
     }
-    const manager = await User.findOneAndUpdate({ _id: rent.ownerid }, {
+    await User.updateOne({ _id: rent.ownerid._id }, {
         $push: {
             notifications: managerNewNotification
         }
     })
-    socket.emit('sendnotification', { userid: rent.ownerid, notification: managerNewNotification })
+    socket.emit('sendnotification', { userid: rent.ownerid._id, notification: managerNewNotification })
 
-    const car = await Car.findOneAndUpdate({ _id: rent.carid }, { $set: { state: true } })
+    await Car.updateOne({ _id: rent.carid }, { $set: { state: true } })
 
     // rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
-    rentEnded(manager.email, manager.username, client.username, car.carnumber)
+    rentEnded(rent.ownerid.email, rent.ownerid.username, rent.clientid.username, rent.carid.carnumber)
 
 }
 exports.getUnValidatedRequests = async (req, res) => {
@@ -191,27 +194,32 @@ exports.validateRequest = async (req, res, next) => {
 
     //tofix
     try {
-        let rent = await Rent.findOne({ _id: req.body.rentid }).populate('carid')
+        let rent = await Rent.findOne({ _id: req.body.rentid }).populate([{
+            path: 'clientid'
+        }, { path: 'carid' }, { path: 'ownerid' }])
         rent.validated = true;
         await rent.save()
         let manager = await User.findOne({ _id: req.user._id })
         const NewNotification = {
             _id: new mongoose.Types.ObjectId(),
-            userid: manager._id,
-            carid: rent.carid._id,
+            userid: rent.ownerid,
+            carid: rent.carid,
             type: 'requestaccepted'
         }
-        let client = await User.findOneAndUpdate({ _id: rent.clientid }, {
+        await User.updateOne({ _id: rent.clientid }, {
             $push: {
                 notifications: NewNotification
             }
         })
-        socket.emit('sendnotification', { userid: rent.clientid, notification: NewNotification })
+        socket.emit('sendnotification', { userid: rent.clientid._id, notification: NewNotification })
         setTimeout(() => activateRentHandler(rent._id), new Date(rent.from).getTime() - new Date().getTime());
         setTimeout(() => endRentHandle(rent._id), new Date(rent.to).getTime() - new Date().getTime());
-        requestAccepted(client.email, client.username, manager._id, rent.carid.carnumber, rent.daterent, manager.agencename)
-        if (!manager.clients.includes(rent.clientid)) {
-            manager.clients.push(rent.clientid)
+        requestAccepted(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid.carnumber, rent.daterent, rent.ownerid.agencename)
+        const includes = rent.ownerid.clients.some(client => {
+            return client === rent.clientid._id
+        })
+        if (!includes) {
+            manager.clients.push(rent.clientid._id)
             await manager.save()
             res.status(200).json({ message: 'Request accepted successfully' })
             return;
@@ -229,19 +237,19 @@ exports.declineRequest = async (req, res, next) => {
 
     try {
 
-        const rent = await Rent.findOne({ _id: req.body.rentid })
-        const client = await User.findOne({ _id: rent.clientid })
+        const rent = await Rent.findById(req.body.rentid).populate([{
+            path: 'clientid'
+        }, { path: 'carid' }, { path: 'ownerid' }])
         const newNotifcation = {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.ownerid,
             carid: rent.carid,
             type: 'declinedrequest'
         }
-        client.notifications.push(newNotifcation)
-        await client.save()
+        await User.updateOne({ _id: rent.clientid._id }, { $push: { notifications: newNotifcation } })
+        declinedRequest(rent.clientid.email, rent.client.username, rent.ownerid._id, rent.carid._id)
+        socket.emit('sendnotification', { userid: rent.clientid._id, notification: newNotifcation })
         await Rent.deleteOne({ _id: req.body.rentid })
-        declinedRequest(client.email, client.username, rent.ownerid, rent.carid)
-        socket.emit('sendnotification', { userid: rent.clientid, notification: newNotifcation })
         res.status(200).json({ message: 'Request declined successfully' })
 
     } catch (error) {
