@@ -196,23 +196,20 @@ exports.UserLogin = async (req, res) => {
 }
 //user : surname name profileimage , car: brand serie image
 exports.getUserWithToken = (req, res) => {
-    if (req.user) {
-        User.findOne({ _id: req.user._id })
-            .populate([{
-                path: 'notifications.userid', select: 'name surname profileimg'
-            }, { path: 'notifications.carid', select: 'brand carnumber images' }])
-            .exec()
-            .then(user => {
-                res.status(200).json({ user: user })
 
-            })
-            .catch(error => {
-                res.status(500).json({ message: error.message })
+    User.findOne({ _id: req.user._id })
+        .populate([{
+            path: 'notifications.userid', select: 'name surname profileimg'
+        }, { path: 'notifications.carid', select: 'brand carnumber images' }])
+        .exec()
+        .then(user => {
+            res.status(200).json({ user: user })
 
-            })
-    }
-    else
-        res.status(401).json({ message: 'auth failed' })
+        })
+        .catch(error => {
+            res.status(500).json({ message: error.message })
+
+        })
 }
 
 
@@ -366,5 +363,24 @@ exports.getManagers = async (req, res) => {
 
         res.status(500).json({ message: error.message })
     }
+
+}
+
+exports.markAsReadNotification = async (req, res) => {
+
+    try {
+
+        const user = await User.findOne({ _id: req.user });
+        const index = user.notifications.findIndex(notification => notification._id.toString() === req.params.id)
+        user.notifications[index].read = true;
+        await user.save()
+        res.status(200).json({ message: 'notification updated' });
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+
+    }
+
 
 }
