@@ -247,7 +247,7 @@ exports.declineRequest = async (req, res, next) => {
             type: 'declinedrequest'
         }
         await User.updateOne({ _id: rent.clientid._id }, { $push: { notifications: newNotifcation } })
-        declinedRequest(rent.clientid.email, rent.client.username, rent.ownerid._id, rent.carid._id)
+        declinedRequest(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid._id)
         socket.emit('sendnotification', { userid: rent.clientid._id, notification: newNotifcation })
         await Rent.deleteOne({ _id: req.body.rentid })
         res.status(200).json({ message: 'Request declined successfully' })
