@@ -24,6 +24,7 @@ router.get('/reset-password-auhorization/:token', Usercontroller.confirmPassword
 router.patch('/reset-userpassword/:token', Usercontroller.resetPassword) //new
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.patch('/password', CheckAuth, Usercontroller.updatePassword)
+router.patch('/markasread', CheckAuth, Usercontroller.markAsReadAllNotification)
 router.patch('/markasread/:id', CheckAuth, Usercontroller.markAsReadNotification)
 
 

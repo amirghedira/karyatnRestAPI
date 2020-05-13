@@ -368,6 +368,26 @@ exports.getManagers = async (req, res) => {
 
 }
 
+exports.markAsReadAllNotification = async (req, res) => {
+
+    try {
+
+        const user = await User.findOne({ _id: req.user });
+        const newNotifications = user.notifications;
+        newNotifications.forEach(notification => {
+            notification.read = true;
+        })
+        await User.updateOne({ _id: req.user._id }, { $set: { notifications: newNotifications } })
+        res.status(200).json({ message: 'notification updated' });
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+
+    }
+
+}
+
 exports.markAsReadNotification = async (req, res) => {
 
     try {
