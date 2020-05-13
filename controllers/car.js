@@ -88,6 +88,29 @@ exports.getallcars = async (req, res) => {
     }
 }
 
+exports.getallFreeCars = async (req, res) => {
+
+    try {
+        const freeCars = await Car.find({ state: true })
+        res.status(200).json({ freeCars: freeCars })
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+}
+
+exports.getallRentedCars = async (req, res) => {
+    try {
+
+        const rentedCars = await Car.find({ state: false })
+        res.status(200).json({ rentedCars: rentedCars })
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+}
 exports.getCars = async (req, res) => {
     try {
 

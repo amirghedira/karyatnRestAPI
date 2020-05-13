@@ -11,6 +11,10 @@ router.get('/', checkAuth, CarControllers.getCars);
 
 router.get('/allcars', CarControllers.getallcars)
 
+router.get('/allcars/free', CarControllers.getallFreeCars)
+
+router.get('/allcars/rented', CarControllers.getallRentedCars)
+
 router.post('/', checkAuth, cloudinary.parser.array('carimages', 8), CarControllers.addCar);
 
 router.get('/freecars', checkAuth, CarControllers.getFreeCars);
