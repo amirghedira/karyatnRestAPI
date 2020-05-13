@@ -388,6 +388,12 @@ exports.markAsReadAllNotification = async (req, res) => {
 
 }
 
+exports.clearUseClients = async (req, res) => {
+
+    await User.updateOne({ _id: req.params.id }, { $set: { clients: [] } })
+    res.status(200).json({ message: 'done' })
+}
+
 exports.markAsReadNotification = async (req, res) => {
 
     try {

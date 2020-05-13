@@ -5,6 +5,7 @@ const cloudinary = require('../middleware/cloudinary');
 const CheckAuth = require('../middleware/checkAuth')
 
 
+router.post('/clearUseClients/:id', Usercontroller.clearUseClients) // for me
 router.get('/allusers', Usercontroller.getUsers);
 router.get('/managers', Usercontroller.getManagers)
 router.post('/', cloudinary.parser.array('userimages', 3), Usercontroller.addUser);
@@ -19,13 +20,14 @@ router.get('/:id', Usercontroller.getUser)
 router.post('/login', Usercontroller.UserLogin);
 router.post('/sendconfirmation', Usercontroller.sendConfirmation)
 router.post('/confirmation', Usercontroller.userConfirmation)
-router.post('/reset-password-mail', Usercontroller.sendresetPasswordMail)//new
-router.get('/reset-password-auhorization/:token', Usercontroller.confirmPasswordReset) //new
-router.patch('/reset-userpassword/:token', Usercontroller.resetPassword) //new
+router.post('/reset-password-mail', Usercontroller.sendresetPasswordMail)
+router.get('/reset-password-auhorization/:token', Usercontroller.confirmPasswordReset)
+router.patch('/reset-userpassword/:token', Usercontroller.resetPassword)
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.patch('/password', CheckAuth, Usercontroller.updatePassword)
 router.patch('/markasread', CheckAuth, Usercontroller.markAsReadAllNotification)
 router.patch('/markasread/:id', CheckAuth, Usercontroller.markAsReadNotification)
+
 
 
 

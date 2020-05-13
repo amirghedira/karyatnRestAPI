@@ -217,8 +217,8 @@ exports.validateRequest = async (req, res, next) => {
         requestAccepted(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid.carnumber, rent.daterent, rent.ownerid.agencename)
         let includes = false
 
-        rent.ownerid.clients.forEach(client => {
-            if (client._id === rent.clientid._id) {
+        manager.clients.forEach(clientid => {
+            if (clientid === rent.clientid._id) {
                 includes = true
             }
         })
