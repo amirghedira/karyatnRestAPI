@@ -215,14 +215,8 @@ exports.validateRequest = async (req, res, next) => {
         setTimeout(() => activateRentHandler(rent._id), new Date(rent.from).getTime() - new Date().getTime());
         setTimeout(() => endRentHandle(rent._id), new Date(rent.to).getTime() - new Date().getTime());
         requestAccepted(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid.carnumber, rent.daterent, rent.ownerid.agencename)
-        let includes = false
 
-        manager.clients.forEach(clientid => {
-            if (clientid === rent.clientid._id) {
-                includes = true
-            }
-        })
-        if (!includes) {
+        if (!manager.clients.includes(rent.clientid._id)) {
             manager.clients.push(rent.clientid._id)
             await manager.save()
             res.status(200).json({ message: 'Request accepted successfully' })
