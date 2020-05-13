@@ -215,8 +215,12 @@ exports.validateRequest = async (req, res, next) => {
         setTimeout(() => activateRentHandler(rent._id), new Date(rent.from).getTime() - new Date().getTime());
         setTimeout(() => endRentHandle(rent._id), new Date(rent.to).getTime() - new Date().getTime());
         requestAccepted(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid.carnumber, rent.daterent, rent.ownerid.agencename)
-        const includes = rent.ownerid.clients.some(client => {
-            return client._id === rent.clientid._id
+        const includes = false
+
+        rent.ownerid.clients.forEach(client => {
+            if (client._id === rent.clientid._id) {
+                includes = true
+            }
         })
         if (!includes) {
             manager.clients.push(rent.clientid._id)
