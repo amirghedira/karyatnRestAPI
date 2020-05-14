@@ -3,7 +3,7 @@ const Car = require('../models/Car');
 const User = require('../models/User')
 const mongoose = require('mongoose')
 const io = require('socket.io-client')
-const socket = io('http://localhost:3000')
+const socket = io('http://karyatn.amir-ghedira.com')
 const { SendRequest, rentEnded, requestAccepted, declinedRequest } = require('../middleware/sendMail')
 
 exports.getRents = async (req, res) => {
