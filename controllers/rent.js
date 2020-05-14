@@ -3,7 +3,7 @@ const Car = require('../models/Car');
 const User = require('../models/User')
 const mongoose = require('mongoose')
 const io = require('socket.io-client')
-const socket = io('http://karyatn.amir-ghedira.com')
+const socket = io('http://localhost:3000')
 const { SendRequest, rentEnded, requestAccepted, declinedRequest } = require('../middleware/sendMail')
 
 exports.getRents = async (req, res) => {
@@ -256,10 +256,10 @@ exports.declineRequest = async (req, res, next) => {
     }
 }
 
-exports.deleteRent = async (req, res) => {
+exports.deleteRents = async (req, res) => {
 
     try {
-        await Rent.deleteOne({ _id: req.params.id })
+        await Rent.deleteMany()
         res.status(200).json({ message: 'rent successfully deleted' })
 
 

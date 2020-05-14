@@ -25,7 +25,8 @@ exports.addCar = async (req, res) => {
                 seatscount: req.body.seatscount,
                 images: imageurls,
                 ownerid: req.user._id,
-                address: user.address
+                address: user.address,
+                addedDate: new Date().toISOString()
             })
             const car = await newcar.save()
             user.cars.push(newcar)
@@ -204,4 +205,16 @@ exports.getCarsCount = async (req, res, next) => {
 
         res.status(500).json({ message: error.message })
     }
+}
+
+exports.deleteAllCars = (req, res) => {
+
+    Car.deleteMany()
+        .then(result => {
+            res.status(200).json({ message: 'done' })
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message })
+
+        })
 }

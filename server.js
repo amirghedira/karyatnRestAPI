@@ -10,4 +10,9 @@ server.listen(process.env.PORT || 3000, () => {
             socket.broadcast.emit('sendnotification', notificationObject)
         })
     })
+    io.on('disconnect', (socket) => {
+
+        console.log(socket.id)
+
+    })
 })
