@@ -26,7 +26,7 @@ exports.addUser = async (req, res, next) => {
             address: req.body.address,
             profileimg: urls[0] ? urls[0] : null,
             ncinimg: urls[1],
-            joindate: new Date(),
+            joindate: new Date().toISOString(),
             notifications: [],
             agencename: req.body.agencename,
             phonenum: req.body.phonenum

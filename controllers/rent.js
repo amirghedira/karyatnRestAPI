@@ -45,6 +45,8 @@ exports.sendRequest = async (req, res, next) => {
                     _id: new mongoose.Types.ObjectId(),
                     userid: client,
                     carid: car,
+                    read: false,
+                    date: new Date().toISOString(),
                     type: 'request'
                 }
                 let manager = await User.findOneAndUpdate({ _id: req.params.ownerid }, {
@@ -92,7 +94,9 @@ const endRentHandler = async (rentid) => {
         _id: new mongoose.Types.ObjectId(),
         userid: rent.ownerid,
         carid: rent.carid,
-        type: 'rentended'
+        type: 'rentended',
+        read: false,
+        date: new Date().toISOString()
     }
     await User.updateOne({ _id: rent.clientid._id }, {
         $push: {
@@ -104,7 +108,9 @@ const endRentHandler = async (rentid) => {
         _id: new mongoose.Types.ObjectId(),
         userid: rent.clientid,
         carid: rent.carid,
-        type: 'rentended'
+        type: 'rentended',
+        read: false,
+        date: new Date().toISOString()
     }
     await User.updateOne({ _id: rent.ownerid._id }, {
         $push: {
@@ -204,7 +210,9 @@ exports.validateRequest = async (req, res, next) => {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.ownerid,
             carid: rent.carid,
-            type: 'requestaccepted'
+            type: 'requestaccepted',
+            read: false,
+            date: new Date().toISOString()
         }
         await User.updateOne({ _id: rent.clientid }, {
             $push: {

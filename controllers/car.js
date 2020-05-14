@@ -26,7 +26,7 @@ exports.addCar = async (req, res) => {
                 images: imageurls,
                 ownerid: req.user._id,
                 address: user.address,
-                addedDate: new Date()
+                addedDate: new Date().toISOString()
             })
             const car = await newcar.save()
             user.cars.push(newcar)
