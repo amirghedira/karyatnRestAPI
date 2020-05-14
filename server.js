@@ -26,7 +26,7 @@ server.listen(process.env.PORT || 3000, () => {
         })
         socket.on('sendnotification', (notificationObject) => {
             if (ConnectedUsers[notificationObject.userid])
-                socket.broadcast.to(ConnectedUsers[notificationObject.userid]).emit('sendnotification', notificationObject)
+                socket.broadcast.to(ConnectedUsers[notificationObject.userid]).emit('sendnotification', notificationObject.notification)
         })
     })
 })
