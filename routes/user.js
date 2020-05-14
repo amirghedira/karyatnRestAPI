@@ -6,7 +6,6 @@ const CheckAuth = require('../middleware/checkAuth')
 
 
 
-router.delete('/', Usercontroller.deleteAllUsers)//for me
 router.post('/clearUseClients/:id', Usercontroller.clearUseClients) // for me
 router.get('/allusers', Usercontroller.getUsers);
 router.get('/managers', Usercontroller.getManagers)

@@ -26,7 +26,7 @@ exports.addCar = async (req, res) => {
                 images: imageurls,
                 ownerid: req.user._id,
                 address: user.address,
-                addedDate: new Date().toISOString()
+                addedDate: new Date()
             })
             const car = await newcar.save()
             user.cars.push(newcar)
@@ -54,7 +54,6 @@ exports.addCar = async (req, res) => {
         res.status(409).json({ message: 'Car already exist' })
 
     } catch (error) {
-
         res.status(500).json({ message: error.message })
 
     }
@@ -114,9 +113,9 @@ exports.getallRentedCars = async (req, res) => {
 }
 exports.getCars = async (req, res) => {
     try {
-
         const user = await User.findOne({ _id: req.user._id }).populate('cars')
         res.status(200).json({ cars: user.cars })
+
     } catch (error) {
 
         res.status(500).json({ message: error.message })
