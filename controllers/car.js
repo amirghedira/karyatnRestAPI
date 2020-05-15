@@ -206,6 +206,20 @@ exports.getCarsCount = async (req, res, next) => {
     }
 }
 
+exports.updateCar = async (req, res) => {
+
+    let ops = {};
+    for (let obj of req.body) {
+        ops[obj.propName] = obj.value
+    }
+    try {
+        await User.updateOne({ $and: [{ matricule: req.params.carnumber, ownerid: req.user._id }] }, { $set: ops })
+        res.status(200).json({ message: 'car updated successfully' })
+    } catch (error) {
+
+        res.status(500).json({ message: err.message })
+    }
+}
 exports.deleteAllCars = (req, res) => {
 
     Car.deleteMany()
