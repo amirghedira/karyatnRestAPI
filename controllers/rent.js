@@ -224,8 +224,9 @@ exports.validateRequest = async (req, res, next) => {
             }
         })
         socket.emit('sendnotification', { userid: rent.clientid._id, notification: NewNotification })
-        setTimeout(() => activateRentHandler(rent._id), new Date(rent.from).getTime() - new Date().getTime());
-        setTimeout(() => endRentHandle(rent._id), new Date(rent.to).getTime() - new Date().getTime());
+        activateRentHandler(rent._id)
+        // setTimeout(() => activateRentHandler(rent._id), new Date(rent.from).getTime() - new Date().getTime());
+        // setTimeout(() => endRentHandle(rent._id), new Date(rent.to).getTime() - new Date().getTime());
         requestAccepted(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid.carnumber, rent.daterent, rent.ownerid.agencename)
 
         if (!manager.clients.includes(rent.clientid._id)) {
