@@ -122,7 +122,7 @@ const endRentHandler = async (rentid) => {
 
     await Car.updateOne({ _id: rent.carid }, { $set: { state: true } })
 
-    // rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
+    rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
     rentEnded(rent.ownerid.email, rent.ownerid.username, rent.clientid.username, rent.carid.carnumber)
 
 }
