@@ -168,7 +168,7 @@ const activateRentHandler = async (rentid) => {
 
         rent.active = true
         await rent.save()
-        await Car.updateOne({ _id: rent.carid }, { $set: { state: false } })
+        await Car.updateOne({ _id: rent.carid._id }, { $set: { state: false } })
         const ownerNotification = {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.clientid,
@@ -181,12 +181,12 @@ const activateRentHandler = async (rentid) => {
             carid: rent.carid,
             type: 'activatedrent'
         }
-        await User.updateOne({ _id: rent.ownerid }, {
+        await User.updateOne({ _id: rent.ownerid._id }, {
             $push: {
                 notifications: ownerNotification
             }
         })
-        await User.updateOne({ _id: rent.clientid }, {
+        await User.updateOne({ _id: rent.clientid._id }, {
             $push: {
                 notifications: clientNotification
             }
