@@ -276,4 +276,7 @@ exports.deleteRents = async (req, res) => {
     }
 }
 
-
+exports.deleteAllRents = async (req, res) => {
+    await Rent.deleteMany()
+    res.status(200).json({ message: 'deleted' })
+}
