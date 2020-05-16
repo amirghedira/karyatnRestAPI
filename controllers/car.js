@@ -213,7 +213,7 @@ exports.updateCar = async (req, res) => {
         ops[obj.propName] = obj.value
     }
     try {
-        await User.updateOne({ $and: [{ matricule: req.params.carnumber, ownerid: req.user._id }] }, { $set: ops })
+        await Car.updateOne({ $and: [{ _id: req.params.id, ownerid: req.user._id }] }, { $set: ops })
         res.status(200).json({ message: 'car updated successfully' })
     } catch (error) {
 

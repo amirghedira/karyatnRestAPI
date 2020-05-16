@@ -23,7 +23,7 @@ router.get('/history/:id', checkAuth, CarControllers.getCarHistory)
 
 router.get('/:id', CarControllers.getCar);
 
-router.patch('/:carnumber', checkAuth, CarControllers.updateCar)
+router.patch('/:id', checkAuth, CarControllers.updateCar)
 
 router.delete('/:id', checkAuth, CarControllers.deleteCar);
 
