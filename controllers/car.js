@@ -220,14 +220,3 @@ exports.updateCar = async (req, res) => {
         res.status(500).json({ message: err.message })
     }
 }
-exports.deleteAllCars = (req, res) => {
-
-    Car.deleteMany()
-        .then(result => {
-            res.status(200).json({ message: 'done' })
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message })
-
-        })
-}

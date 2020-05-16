@@ -161,6 +161,10 @@ const activateRentHandler = async (rentid) => {
     try {
 
         let rent = await Rent.findOne({ _id: rentid })
+        populate([{
+            path: 'clientid'
+        }, { path: 'carid' }, { path: 'ownerid' }])
+
         rent.active = true
         await rent.save()
         await Car.updateOne({ _id: rent.carid }, { $set: { state: false } })

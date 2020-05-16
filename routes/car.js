@@ -25,7 +25,7 @@ router.get('/:id', CarControllers.getCar);
 
 router.patch('/:id', checkAuth, CarControllers.updateCar)
 
-router.delete('/:id', checkAuth, CarControllers.deleteCar);
+router.delete('/:id', CarControllers.deleteCar);
 
 
 
