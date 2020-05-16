@@ -191,8 +191,8 @@ const activateRentHandler = async (rentid) => {
                 notifications: clientNotification
             }
         })
-        socket.emit('sendnotification', { userid: rent.ownerid, notification: ownerNotification })
-        socket.emit('sendnotification', { userid: rent.clientid, notification: clientNotification })
+        socket.emit('sendnotification', { userid: rent.ownerid._id, notification: ownerNotification })
+        socket.emit('sendnotification', { userid: rent.clientid._id, notification: clientNotification })
 
 
     } catch (error) {
@@ -203,7 +203,7 @@ const activateRentHandler = async (rentid) => {
 exports.deleteReservation = async (req, res) => {
     try {
 
-        await Rent.deleteOne({ id })
+        await Rent.deleteOne({ $and: [{ id: req.params.id }] })
         res.status(200).json({ message: 'reservation deleted' })
 
 
