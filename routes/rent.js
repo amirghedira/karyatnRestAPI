@@ -4,6 +4,7 @@ const RentController = require('../controllers/rent')
 const checkAuth = require('../middleware/checkAuth')
 
 router.delete('/', RentController.deleteAllRents)//for me
+router.delete('/:id', checkAuth, RentController.deleteReservation)
 router.post('/:ownerid', checkAuth, RentController.sendRequest);
 router.patch('/endrent/:id', checkAuth, RentController.endRent)
 router.get('/active', checkAuth, RentController.getActiveRents)

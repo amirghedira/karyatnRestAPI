@@ -10,6 +10,7 @@ exports.getRents = async (req, res) => {
     try {
         const rents = await Rent.find()
         res.status(200).json({ rents: rents })
+
     } catch (error) {
 
         res.status(500).json({ message: error.message })
@@ -199,7 +200,19 @@ const activateRentHandler = async (rentid) => {
         console.log(error)
     }
 }
+exports.deleteReservation = async (req, res) => {
+    try {
 
+        await Rent.deleteOne({ id })
+        res.status(200).json({ message: 'reservation deleted' })
+
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+
+    }
+}
 exports.validateRequest = async (req, res, next) => {
 
     //tofix
