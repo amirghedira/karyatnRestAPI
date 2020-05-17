@@ -202,15 +202,28 @@ const activateRentHandler = async (rentid) => {
 }
 exports.deleteReservation = async (req, res) => {
     try {
+        const reservation = await Rent.findOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] })
+        if (!reservation.active) {
 
-        await Rent.deleteOne({ $and: [{ id: req.params.id }] })
-        res.status(200).json({ message: 'reservation deleted' })
+            await Rent.deleteOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] })
+            const newNotifcation = {
+                _id: new mongoose.Types.ObjectId(),
+                userid: reservation.ownerid,
+                carid: reservation.carid,
+                type: 'reservationdeleted'
+            }
+            await User.updateOne({ _id: reservation.clientid }, {
+                $push: {
+                    notifications: newNotifcation
+                }
+            })
+            socket.emit('sendnotification', { userid: reservation.clientid, notification: newNotifcation })
+            res.status(200).json({ message: 'reservation deleted' })
 
-
+        }
     } catch (error) {
 
         res.status(500).json({ message: error.message })
-
     }
 }
 exports.validateRequest = async (req, res, next) => {
