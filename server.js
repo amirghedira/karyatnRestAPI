@@ -7,26 +7,33 @@ const ConnectedUsers = [];
 server.listen(process.env.PORT || 3000, () => {
 
     io.on('connection', (socket) => {
-        console.log(socket.id)
         socket.on('connectuser', (token) => {
             try {
                 let user = jwt.verify(token, process.env.JWT_SECRET_KEY)
-                ConnectedUsers[user._id] = socket.id
+                const userindex = ConnectedUsers.findIndex(connecteduser => {
+                    return connecteduser.userid === user._id
+                })
+                if (userindex < 0)
+                    ConnectedUsers.push({ userid: user._id, socketid: socket.id })
             } catch (error) {
                 console.log('error')
             }
         })
         socket.on('disconnect', () => {
-            console.log('has disconnected ', socket.id)
-            const index = ConnectedUsers.findIndex(usersocketid => {
-                return usersocketid === socket.id
+
+            const userindex = ConnectedUsers.findIndex(connecteduser => {
+                return connecteduser.socketid === socket.id
             })
-            ConnectedUsers.splice(index, 1)
+            if (userindex >= 0)
+                ConnectedUsers.splice(userindex, 1)
 
         })
         socket.on('sendnotification', (notificationObject) => {
-            if (ConnectedUsers[notificationObject.userid])
-                socket.broadcast.to(ConnectedUsers[notificationObject.userid]).emit('sendnotification', notificationObject.notification)
+            const userindex = ConnectedUsers.findIndex(connecteduser => {
+                return connecteduser.userid === user._id
+            })
+            if (userids.includes(notificationObject.userid))
+                socket.broadcast.to(ConnectedUsers[userindex].userid).emit('sendnotification', notificationObject.notification)
         })
     })
 })

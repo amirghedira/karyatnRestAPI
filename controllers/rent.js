@@ -6,6 +6,8 @@ const io = require('socket.io-client')
 const socket = io('http://karyatn.amir-ghedira.com')
 const { SendRequest, rentEnded, requestAccepted, declinedRequest } = require('../middleware/sendMail')
 
+
+
 exports.getRents = async (req, res) => {
     try {
         const rents = await Rent.find()
