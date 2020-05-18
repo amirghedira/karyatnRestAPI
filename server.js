@@ -7,6 +7,8 @@ const ConnectedUsers = [];
 server.listen(process.env.PORT || 3000, () => {
 
     io.on('connection', (socket) => {
+        console.log(socket.id)
+
         socket.on('connectuser', (token) => {
             try {
                 let user = jwt.verify(token, process.env.JWT_SECRET_KEY)
