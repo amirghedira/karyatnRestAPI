@@ -227,8 +227,11 @@ exports.deleteReservation = async (req, res) => {
             await Rent.deleteOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] })
             socket.emit('sendnotification', { userid: reservation.clientid, notification: newNotifcation })
             res.status(200).json({ message: 'reservation deleted' })
+            return;
 
         }
+        res.status(409).json({ message: 'reservation is active' })
+
     } catch (error) {
 
         res.status(500).json({ message: error.message })
