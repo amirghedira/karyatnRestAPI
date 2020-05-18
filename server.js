@@ -24,6 +24,9 @@ server.listen(process.env.PORT || 3000, () => {
                 console.log('error')
             }
         })
+        socket.on('users', () => {
+            console.log(ConnectedUsers)
+        })
         socket.on('disconnect', () => {
 
             const userindex = ConnectedUsers.findIndex(connecteduser => {

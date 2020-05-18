@@ -21,6 +21,8 @@ exports.getRents = async (req, res) => {
 
 exports.activeUsers = (req, res) => {
 
+    socket.emit('users', 'hey');
+    res.status(200).json({ message: 'done' })
 }
 exports.sendRequest = async (req, res, next) => {
 
