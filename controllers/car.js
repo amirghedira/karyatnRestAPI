@@ -211,11 +211,12 @@ exports.updateCarPhoto = async (req, res) => {
     try {
         const car = await Car.findOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] })
         if (car) {
-            cloudinary.uploader.destroy(imageName(car.images[req.body.index]), (result, err) => {
+            cloudinary.uploader.destroy(req.body.oldimage, (result, err) => {
                 if (err)
                     res.status(500).json({ error: err })
             });
-            car.images[req.body.index] = req.file.secure_url
+            const imageindex = car.images.findIndex(carimage => { return carimage === req.body.oldimage })
+            car.images[imageindex] = req.file.secure_url
             await car.save()
             res.status(200).json({ message: 'car successfully updated' })
             return;
