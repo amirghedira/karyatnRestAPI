@@ -7,7 +7,7 @@ const CheckAuth = require('../middleware/checkAuth')
 
 
 router.post('/clearUseClients/:id', Usercontroller.clearUseClients) // for me
-router.get('/allusers', Usercontroller.getUsers);
+router.get('/allusers', Usercontroller.getUsers) //for me
 router.get('/managers', Usercontroller.getManagers)
 router.post('/', cloudinary.parser.array('userimages', 3), Usercontroller.addUser);
 router.get('/', CheckAuth, Usercontroller.getUserWithToken)

@@ -206,6 +206,29 @@ exports.getCarsCount = async (req, res, next) => {
     }
 }
 
+exports.updateCarPhoto = async (req, res) => {
+
+    try {
+        const car = await Car.findOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] })
+        if (car) {
+            cloudinary.uploader.destroy(imageName(car.images[req.body.index]), (result, err) => {
+                if (err)
+                    res.status(500).json({ error: err })
+            });
+            car.images[req.body.index] = req.file.secure_url
+            await car.save()
+            res.status(200).json({ message: 'car successfully updated' })
+            return;
+        }
+        res.status(404).json({ message: 'car not found' })
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+    }
+
+}
+
 exports.updateCar = async (req, res) => {
 
     let ops = {};

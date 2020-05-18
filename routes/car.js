@@ -25,6 +25,8 @@ router.get('/:id', CarControllers.getCar);
 
 router.patch('/:id', checkAuth, CarControllers.updateCar)
 
+router.patch('/image/:id', checkAuth, cloudinary.parser.single('carimage'), CarControllers.updateCarPhoto)
+
 router.delete('/:id', CarControllers.deleteCar);
 
 
