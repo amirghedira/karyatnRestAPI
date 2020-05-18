@@ -15,7 +15,7 @@ server.listen(process.env.PORT || 3000, () => {
                 console.log(user)
                 if (user) {
                     const userindex = ConnectedUsers.findIndex(connecteduser => {
-                        return connecteduser.userid === user._id
+                        return connecteduser.userid == user._id
                     })
                     if (userindex < 0)
                         ConnectedUsers.push({ userid: user._id, socketid: socket.id })
