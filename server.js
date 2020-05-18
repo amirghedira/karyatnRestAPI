@@ -12,10 +12,9 @@ server.listen(process.env.PORT || 3000, () => {
         socket.on('connectuser', (token) => {
             try {
                 let user = jwt.verify(token, process.env.JWT_SECRET_KEY)
-                console.log(user)
                 if (user) {
                     const userindex = ConnectedUsers.findIndex(connecteduser => {
-                        return connecteduser.userid == user._id
+                        return connecteduser.userid === user._id
                     })
                     if (userindex < 0)
                         ConnectedUsers.push({ userid: user._id, socketid: socket.id })
@@ -36,9 +35,9 @@ server.listen(process.env.PORT || 3000, () => {
         })
         socket.on('sendnotification', (notificationObject) => {
             const userindex = ConnectedUsers.findIndex(connecteduser => {
-                return connecteduser.userid === user._id
+                return connecteduser.userid === notificationObject.userid
             })
-            if (userids.includes(notificationObject.userid))
+            if (userindex >= 0)
                 socket.broadcast.to(ConnectedUsers[userindex].userid).emit('sendnotification', notificationObject.notification)
         })
     })
