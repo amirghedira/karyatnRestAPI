@@ -12,11 +12,15 @@ server.listen(process.env.PORT || 3000, () => {
         socket.on('connectuser', (token) => {
             try {
                 let user = jwt.verify(token, process.env.JWT_SECRET_KEY)
-                const userindex = ConnectedUsers.findIndex(connecteduser => {
-                    return connecteduser.userid === user._id
-                })
-                if (userindex < 0)
-                    ConnectedUsers.push({ userid: user._id, socketid: socket.id })
+                console.log(user)
+                if (user) {
+                    const userindex = ConnectedUsers.findIndex(connecteduser => {
+                        return connecteduser.userid === user._id
+                    })
+                    if (userindex < 0)
+                        ConnectedUsers.push({ userid: user._id, socketid: socket.id })
+
+                }
             } catch (error) {
                 console.log('error')
             }
