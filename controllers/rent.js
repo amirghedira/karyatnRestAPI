@@ -181,13 +181,16 @@ const activateRentHandler = async (rentid) => {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.clientid,
             carid: rent.carid,
-            type: 'activatedrent'
+            type: 'activatedrent',
+            read: false
         }
         const clientNotification = {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.ownerid,
             carid: rent.carid,
-            type: 'activatedrent'
+            type: 'activatedrent',
+            read: false
+
         }
         await User.updateOne({ _id: rent.ownerid._id }, {
             $push: {

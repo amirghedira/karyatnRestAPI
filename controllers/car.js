@@ -215,10 +215,8 @@ exports.updateCarPhoto = async (req, res) => {
                 if (err)
                     res.status(500).json({ error: err })
             });
-            console.log(req.body.oldimage)
             const imageindex = car.images.findIndex(carimage => { return carimage === req.body.oldimage })
             let newImages = car.images;
-            console.log(imageindex)
             newImages[imageindex] = req.file.secure_url
             await Car.updateOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] }, { $set: { images: newImages } })
             res.status(200).json({ message: 'car successfully updated' })
