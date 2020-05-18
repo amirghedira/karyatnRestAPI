@@ -294,7 +294,8 @@ exports.declineRequest = async (req, res, next) => {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.ownerid,
             carid: rent.carid,
-            type: 'declinedrequest'
+            type: 'declinedrequest',
+            read: false
         }
         await User.updateOne({ _id: rent.clientid._id }, { $push: { notifications: newNotifcation } })
         declinedRequest(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid._id)
