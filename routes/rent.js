@@ -3,6 +3,8 @@ const router = express.Router();
 const RentController = require('../controllers/rent')
 const checkAuth = require('../middleware/checkAuth')
 
+
+router.get('/activeusers', RentController.activeUsers)
 router.delete('/reservation/:id', checkAuth, RentController.deleteReservation)
 router.post('/:ownerid', checkAuth, RentController.sendRequest);
 router.patch('/endrent/:id', checkAuth, RentController.endRent)

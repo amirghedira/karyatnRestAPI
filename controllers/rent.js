@@ -18,6 +18,10 @@ exports.getRents = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+exports.activeUsers = (req, res) => {
+
+}
 exports.sendRequest = async (req, res, next) => {
 
     try {
@@ -124,7 +128,7 @@ const endRentHandler = async (rentid) => {
 
     await Car.updateOne({ _id: rent.carid }, { $set: { state: true } })
 
-    rentEnded(client.email, client.username, manager._id, car._id, car.carnumber)
+    rentEnded(rent.clientid.email, rent.clientid.username, manager._id, car._id, car.carnumber)
     rentEnded(rent.ownerid.email, rent.ownerid.username, rent.clientid.username, rent.carid.carnumber)
 
 }

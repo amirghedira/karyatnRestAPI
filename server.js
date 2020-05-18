@@ -37,6 +37,7 @@ server.listen(process.env.PORT || 3000, () => {
             const userindex = ConnectedUsers.findIndex(connecteduser => {
                 return connecteduser.userid === notificationObject.userid
             })
+            console.log(userindex)
             if (userindex >= 0)
                 socket.broadcast.to(ConnectedUsers[userindex].userid).emit('sendnotification', notificationObject.notification)
         })
