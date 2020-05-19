@@ -79,7 +79,7 @@ exports.getallcars = async (req, res) => {
 
     try {
         const { page, limit } = req.query;
-        const cars = await Car.paginate({}, { page: page, limit: limit })
+        const cars = await Car.paginate({}, { page: +page, limit: +limit })
         console.log(cars)
         res.status(200).json({ cars: cars })
 
