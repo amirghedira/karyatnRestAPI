@@ -347,7 +347,7 @@ exports.deleteNotification = async (req, res) => {
 exports.deleteNotifications = async (req, res, next) => {
     try {
 
-        await User.updateOne({ _id: req.params.id }, { $set: { notifications: [] } })
+        await User.updateOne({ _id: req.user._id }, { $set: { notifications: [] } })
         res.status(200).json({ message: 'notifications cleared' })
     } catch (error) {
 

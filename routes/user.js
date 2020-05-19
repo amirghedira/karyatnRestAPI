@@ -12,7 +12,7 @@ router.get('/managers', Usercontroller.getManagers)
 router.post('/', cloudinary.parser.array('userimages', 3), Usercontroller.addUser);
 router.get('/', CheckAuth, Usercontroller.getUserWithToken)
 router.patch('/userimage', CheckAuth, cloudinary.parser.single('userimage'), Usercontroller.updateUserImage);
-router.delete('/allnotifications/:id', Usercontroller.deleteNotifications)
+router.delete('/allnotifications', CheckAuth, Usercontroller.deleteNotifications)
 router.get('/clients', CheckAuth, Usercontroller.getClients)
 router.delete('/notifications/:id', CheckAuth, Usercontroller.deleteNotification)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)

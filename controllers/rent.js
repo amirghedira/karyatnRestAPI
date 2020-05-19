@@ -220,7 +220,8 @@ exports.deleteReservation = async (req, res) => {
                 _id: new mongoose.Types.ObjectId(),
                 userid: reservation.ownerid,
                 carid: reservation.carid,
-                type: 'reservationdeleted'
+                type: 'reservationdeleted',
+                read:false
             }
             await User.updateOne({ _id: reservation.clientid }, {
                 $push: {
