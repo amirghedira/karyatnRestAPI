@@ -78,8 +78,9 @@ exports.getFreeCars = async (req, res, next) => {
 exports.getallcars = async (req, res) => {
 
     try {
-
-        const cars = await Car.find()
+        const { page, limit } = req.query;
+        const cars = await Car.paginate({}, { page: page, limit: limit })
+        console.log(cars)
         res.status(200).json({ cars: cars })
 
     } catch (error) {

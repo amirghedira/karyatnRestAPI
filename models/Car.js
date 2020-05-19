@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const mongoosePaginate = require('mongoose-paginate')
 
 const CarSchema = new mongoose.Schema({
 
@@ -18,5 +18,6 @@ const CarSchema = new mongoose.Schema({
     ownerid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 
 })
+CarSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('Car', CarSchema);
