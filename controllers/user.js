@@ -357,8 +357,8 @@ exports.deleteNotifications = async (req, res, next) => {
 
 exports.getManagers = async (req, res) => {
     try {
-
-        const managers = await User.find({ access: 'a' })
+        const { page, limit } = req.query;
+        const managers = await User.paginate({ access: 'a' }, { page: +page, limit: +limit })
         res.status(200).json({ managers: managers })
 
     } catch (error) {

@@ -92,7 +92,8 @@ exports.getallcars = async (req, res) => {
 exports.getallFreeCars = async (req, res) => {
 
     try {
-        const freeCars = await Car.find({ state: true })
+        const { page, limit } = req.query;
+        const freeCars = await Car.paginate({ state: true }, { page: +page, limit: +limit })
         res.status(200).json({ freeCars: freeCars })
 
     } catch (error) {
@@ -103,8 +104,8 @@ exports.getallFreeCars = async (req, res) => {
 
 exports.getallRentedCars = async (req, res) => {
     try {
-
-        const rentedCars = await Car.find({ state: false })
+        const { page, limit } = req.query;
+        const rentedCars = await Car.paginate({ state: false }, { page: +page, limit: +limit })
         res.status(200).json({ rentedCars: rentedCars })
 
     } catch (error) {
