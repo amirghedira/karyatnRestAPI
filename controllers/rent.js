@@ -63,8 +63,17 @@ exports.sendRequest = async (req, res, next) => {
                         notifications: newNotification
                     }
                 })
+
                 SendRequest(manager.email, manager.username, client.username, client._id)
                 socket.emit('sendnotification', { userid: rent.ownerid, notification: newNotification })
+
+                if (req.body.subscribe && !manager.clients.includes(rent.clientid._id)) {
+                    manager.clients.push(rent.clientid._id)
+                    await manager.save()
+                    res.status(201).json({ message: 'Request accepted successfully' })
+                    return;
+
+                }
                 res.status(201).json({ message: 'Request successfully sent' })
                 return;
             }
@@ -221,7 +230,7 @@ exports.deleteReservation = async (req, res) => {
                 userid: reservation.ownerid,
                 carid: reservation.carid,
                 type: 'reservationdeleted',
-                read:false
+                read: false
             }
             await User.updateOne({ _id: reservation.clientid }, {
                 $push: {
@@ -250,7 +259,6 @@ exports.validateRequest = async (req, res, next) => {
         }, { path: 'carid' }, { path: 'ownerid' }])
         rent.validated = true;
         await rent.save()
-        let manager = await User.findOne({ _id: req.user._id })
         const NewNotification = {
             _id: new mongoose.Types.ObjectId(),
             userid: rent.ownerid,
@@ -269,13 +277,6 @@ exports.validateRequest = async (req, res, next) => {
         setTimeout(() => endRentHandler(rent._id), new Date(rent.to).getTime() - new Date().getTime());
         requestAccepted(rent.clientid.email, rent.clientid.username, rent.ownerid._id, rent.carid.carnumber, rent.daterent, rent.ownerid.agencename)
 
-        if (!manager.clients.includes(rent.clientid._id)) {
-            manager.clients.push(rent.clientid._id)
-            await manager.save()
-            res.status(200).json({ message: 'Request accepted successfully' })
-            return;
-
-        }
         res.status(200).json({ message: 'Request accepted successfully' })
 
 
