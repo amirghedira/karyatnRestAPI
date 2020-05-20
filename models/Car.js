@@ -15,6 +15,7 @@ const CarSchema = new mongoose.Schema({
     images: [{ type: String }],
     address: { type: String, required: true },
     addedDate: { type: Date },
+    percentage: [{ type: Number }],
     ownerid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 
 })
