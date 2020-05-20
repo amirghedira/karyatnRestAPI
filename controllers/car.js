@@ -25,6 +25,7 @@ exports.addCar = async (req, res) => {
                 seatscount: req.body.seatscount,
                 images: imageurls,
                 ownerid: req.user._id,
+                percentage: [percent3, percent7, percent15, percent30],
                 address: user.address,
                 addedDate: new Date().toISOString()
             })
