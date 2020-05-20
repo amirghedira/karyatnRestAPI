@@ -416,7 +416,7 @@ exports.deleteClient = async (req, res) => {
 
     try {
         const user = await User.findOne({ _id: req.user._id })
-        const clientindex = user.clients.findindex(clientid => clientid === req.params.id)
+        const clientindex = user.clients.findIndex(clientid => clientid === req.params.id)
         if (clientindex >= 0) {
             let newClients = user.clients;
             newClients.splice(index, 1);
