@@ -419,7 +419,7 @@ exports.deleteClient = async (req, res) => {
         const clientindex = user.clients.findIndex(clientid => clientid.toString() === req.params.id)
         if (clientindex >= 0) {
             let newClients = user.clients;
-            newClients.splice(index, 1);
+            newClients.splice(clientindex, 1);
             user.clients = newClients;
             await user.save()
             return res.status(200).json({ message: 'user updated' })
