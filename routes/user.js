@@ -24,6 +24,7 @@ router.post('/sendconfirmation', Usercontroller.sendConfirmation)
 router.post('/confirmation', Usercontroller.userConfirmation)
 router.post('/reset-password-mail', Usercontroller.sendresetPasswordMail)
 router.get('/reset-password-auhorization/:token', Usercontroller.confirmPasswordReset)
+router.patch('/subscribe/:id', CheckAuth, Usercontroller.subscribeTo)
 router.patch('/reset-userpassword/:token', Usercontroller.resetPassword)
 router.patch('/', CheckAuth, Usercontroller.updateUserInfo);
 router.patch('/password', CheckAuth, Usercontroller.updatePassword)

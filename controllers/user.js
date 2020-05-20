@@ -215,7 +215,6 @@ exports.getUserWithToken = (req, res) => {
 }
 
 
-
 exports.getUserInformations = async (req, res) => {
 
     try {
@@ -443,4 +442,24 @@ exports.deleteAllUsers = (req, res) => {
             res.status(500).json({ message: err.message })
 
         })
+}
+
+exports.subscribeTo = async (req, res) => {
+
+    try {
+        const user = await User.findOne({ _id: req.params.id });
+        if (!user.clients.include(req.user._id)) {
+
+            user.clients.push(req.user._id)
+            user.save()
+            return res.status(200).json({ message: 'subscription done' })
+
+        }
+        res.status(409).json({ message: 'you are already subscribed' })
+    } catch (error) {
+        res.status(500).json({ message: err.message })
+
+    }
+
+
 }
