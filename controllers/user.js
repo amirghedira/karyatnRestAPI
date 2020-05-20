@@ -412,7 +412,27 @@ exports.markAsReadNotification = async (req, res) => {
 
 
 }
+exports.deleteClient = async (req, res) => {
 
+    try {
+        const user = await User.findOne({ _id: req.user._id })
+        const clientindex = user.clients.findindex(clientid => clientid === req.params.id)
+        if (clientindex >= 0) {
+            let newClients = user.clients;
+            newClients.splice(index, 1);
+            user.clients = newClients;
+            await user.save()
+            return res.status(200).json({ message: 'user updated' })
+        }
+        return res.status(404).json({ message: 'user not found' })
+
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ message: error.message })
+
+    }
+}
 exports.deleteAllUsers = (req, res) => {
 
     User.deleteMany()

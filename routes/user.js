@@ -15,6 +15,7 @@ router.patch('/userimage', CheckAuth, cloudinary.parser.single('userimage'), Use
 router.delete('/allnotifications', CheckAuth, Usercontroller.deleteNotifications)
 router.get('/clients', CheckAuth, Usercontroller.getClients)
 router.delete('/notifications/:id', CheckAuth, Usercontroller.deleteNotification)
+router.delete('/client/:id', CheckAuth, Usercontroller.deleteClient)
 router.get('/informations', CheckAuth, Usercontroller.getUserInformations)
 router.get('/archive', CheckAuth, Usercontroller.getUserArchive)
 router.get('/:id', Usercontroller.getUser)
