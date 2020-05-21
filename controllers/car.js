@@ -11,7 +11,7 @@ exports.searchCar = async (req, res) => {
     try {
         const { query } = req.query;
         const cars = await Car.find();
-        const filtredCars = cars.filter(car => { return car.brand.includes(query) })
+        const filtredCars = cars.filter(car => { return car.brand.tolowercase().includes(query) })
         res.status(200).json({ filtredCar: filtredCars })
     } catch (error) {
 
