@@ -5,6 +5,19 @@ const cloudinary = require('../middleware/cloudinary')
 const imageName = require('../middleware/imageName')
 const { newCarPosted } = require('../middleware/sendMail')
 const mongoose = require('mongoose')
+
+exports.searchCar = async (req, res) => {
+
+    try {
+        const { query } = req.query;
+        const cars = await car.find();
+        const filtredCars = cars.filter(car => { return car.brand.includes(query) })
+        res.status(200).json({ filtredCar: filtredCars })
+    } catch (error) {
+
+        res.status(500).json({ error: error.message })
+    }
+}
 exports.addCar = async (req, res) => {
 
     try {
