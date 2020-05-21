@@ -7,7 +7,7 @@ const checkAuth = require('../middleware/checkAuth')
 
 router.get('/', checkAuth, CarControllers.getCars);
 
-router.get('/search', checkAuth, CarControllers.searchCar)
+router.get('/search', CarControllers.searchCar)
 
 router.get('/allcars', CarControllers.getallcars)
 
