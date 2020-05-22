@@ -173,7 +173,7 @@ exports.UserLogin = async (req, res) => {
         const user = await User.findOne({ username: req.body.username })
             .populate([{
                 path: 'notifications.userid', select: 'name surname profileimg'
-            }, { path: 'notifications.carid', select: 'brand carnumber images' }])
+            }, { path: 'notifications.car', select: 'brand carnumber images' }])
         if (user) {
             const result = await bcrypt.compare(req.body.password, user.password)
             if (result) {
@@ -202,7 +202,7 @@ exports.getUserWithToken = (req, res) => {
     User.findOne({ _id: req.user._id })
         .populate([{
             path: 'notifications.userid', select: 'name surname profileimg'
-        }, { path: 'notifications.carid', select: 'brand carnumber images' }])
+        }, { path: 'notifications.car', select: 'brand carnumber images' }])
         .exec()
         .then(user => {
             res.status(200).json({ user: user })
@@ -222,7 +222,7 @@ exports.getUserInformations = async (req, res) => {
         const user = await User.findOne({ _id: req.user._id }).select('-password')
         info.carscount = user.cars.length;
         info.clientscount = user.clients.length
-        let userRents = await Rent.find({ $and: [{ ownerid: req.user._id }, { validated: true }] })
+        let userRents = await Rent.find({ $and: [{ owner: req.user._id }, { validated: true }] })
 
         info.activerents = 0;
         info.inactiverents = 0;
@@ -263,7 +263,7 @@ exports.getUserArchive = async (req, res) => {
 
     try {
 
-        const archives = await Rent.find({ $and: [{ ownerid: req.user._id }, { ended: true }] })
+        const archives = await Rent.find({ $and: [{ owner: req.user._id }, { ended: true }] })
         res.status(200).json({ archives: archives })
 
     } catch (error) {
@@ -415,7 +415,7 @@ exports.deleteClient = async (req, res) => {
 
     try {
         const user = await User.findOne({ _id: req.user._id })
-        const clientindex = user.clients.findIndex(clientid => clientid.toString() === req.params.id)
+        const clientindex = user.clients.findIndex(client => client.toString() === req.params.id)
         if (clientindex >= 0) {
             let newClients = user.clients;
             newClients.splice(clientindex, 1);

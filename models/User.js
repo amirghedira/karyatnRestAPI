@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
         {
             _id: { type: mongoose.Schema.Types.ObjectId, required: true },
             userid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-            carid: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
+            car: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
             type: { type: String },
             read: { type: Boolean, default: false },
             date: { type: Date, default: new Date().toISOString() },

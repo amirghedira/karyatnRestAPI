@@ -6,7 +6,7 @@ const checkAuth = require('../middleware/checkAuth')
 
 router.get('/activeusers', RentController.activeUsers)
 router.delete('/reservation/:id', checkAuth, RentController.deleteReservation)
-router.post('/:ownerid', checkAuth, RentController.sendRequest);
+router.post('/:owner', checkAuth, RentController.sendRequest);
 router.patch('/endrent/:id', checkAuth, RentController.endRent)
 router.get('/active', checkAuth, RentController.getActiveRents)
 router.patch('/validate', checkAuth, RentController.validateRequest)

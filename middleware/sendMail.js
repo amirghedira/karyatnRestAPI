@@ -43,7 +43,7 @@ exports.resetPasswordMail = async (mail, username, link) => {
 
 }
 
-exports.newCarPosted = async (mail, username, carid, agencyname) => {
+exports.newCarPosted = async (mail, username, car, agencyname) => {
     const template = fs.readFileSync('./views/email/newcar.hjs', 'utf-8')
     const compiledTemplate = hjs.compile(template)
     try {
@@ -51,7 +51,7 @@ exports.newCarPosted = async (mail, username, carid, agencyname) => {
             from: '"Karyatn" <karyatn@mail.com>',
             to: mail,
             subject: `${agencyname} a ajouter une nouvelle voiture`,
-            html: compiledTemplate.render({ username: username, activateLink: `${process.env.DOMAIN}/car/${carid}`, agency: agencyname })
+            html: compiledTemplate.render({ username: username, activateLink: `${process.env.DOMAIN}/car/${car}`, agency: agencyname })
         });
     } catch (error) {
         console.log(error)
@@ -59,7 +59,7 @@ exports.newCarPosted = async (mail, username, carid, agencyname) => {
 
 }
 //todos
-exports.SendRequest = async (mail, username, clientname, clientid) => {
+exports.SendRequest = async (mail, username, clientname, client) => {
     const template = fs.readFileSync('./views/email/request.hjs', 'utf-8')
     const compiledTemplate = hjs.compile(template)
     try {
@@ -69,7 +69,7 @@ exports.SendRequest = async (mail, username, clientname, clientid) => {
             subject: `${clientname} vous a envoyer une demande de location`,
             html: compiledTemplate.render({
                 username: username,
-                clientlink: `${process.env.DOMAIN}/profile/${clientid}`,
+                clientlink: `${process.env.DOMAIN}/profile/${client}`,
                 clientname: clientname,
                 requestslink: `${process.env.DOMAIN}/admincp/ajout-location`
             })
@@ -119,7 +119,7 @@ exports.requestAccepted = async (mail, username, managerid, carnumber, requestda
 
 }
 
-exports.declinedRequest = async (mail, username, managerid, carid, carnumber, requestdate, agencyname) => {
+exports.declinedRequest = async (mail, username, managerid, car, carnumber, requestdate, agencyname) => {
     const template = fs.readFileSync('./views/email/requestdeclined.hjs', 'utf-8')
     const compiledTemplate = hjs.compile(template)
     try {
@@ -130,7 +130,7 @@ exports.declinedRequest = async (mail, username, managerid, carid, carnumber, re
             html: compiledTemplate.render({
                 username: username,
                 managerlink: `${process.env.DOMAIN}/profile/${managerid}`,
-                carlink: `${process.env.DOMAIN}/car/${carid}`,
+                carlink: `${process.env.DOMAIN}/car/${car}`,
                 carnumber: carnumber,
                 requestdate: requestdate,
                 agencyname: agencyname
@@ -142,7 +142,7 @@ exports.declinedRequest = async (mail, username, managerid, carid, carnumber, re
 
 }
 
-exports.rentActivatedMail = async (mail, username, rentenddate, carnumber, carid) => {
+exports.rentActivatedMail = async (mail, username, rentenddate, carnumber, car) => {
     const template = fs.readFileSync('./views/email/rentactivated.hjs', 'utf-8')
     const compiledTemplate = hjs.compile(template)
     try {
@@ -153,7 +153,7 @@ exports.rentActivatedMail = async (mail, username, rentenddate, carnumber, carid
             html: compiledTemplate.render({
                 username: username,
                 carnumber: carnumber,
-                carlink: `${process.env.DOMAIN}/car/${carid}`,
+                carlink: `${process.env.DOMAIN}/car/${car}`,
                 rentenddate: rentenddate
             })
         });

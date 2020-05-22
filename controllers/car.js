@@ -37,7 +37,7 @@ exports.addCar = async (req, res) => {
                 doorscount: req.body.doorscount,
                 seatscount: req.body.seatscount,
                 images: imageurls,
-                ownerid: req.user._id,
+                owner: req.user._id,
                 percentage: [req.body.percent3, req.body.percent7, req.body.percent15, req.body.percent30],
                 address: user.address,
                 addedDate: new Date().toISOString()
@@ -45,13 +45,13 @@ exports.addCar = async (req, res) => {
             const car = await newcar.save()
             user.cars.push(newcar)
             await user.save()
-            const clientIds = user.clients.map(client => { return client._id })
-            await User.updateMany({ _id: { $in: [...clientIds] } }, {
+            const clients = user.clients.map(client => { return client._id })
+            await User.updateMany({ _id: { $in: [...clients] } }, {
                 $push: {
                     notifications: {
                         _id: new mongoose.Types.ObjectId(),
                         userid: user._id,
-                        carid: car._doc._id,
+                        car: car._doc._id,
                         type: 'newcar'
                     }
                 }
@@ -174,7 +174,7 @@ exports.deleteCar = async (req, res) => {
         const user = await User.findOne({ _id: req.user._id }).populate('cars')
         let usercarsid = user.cars.map(car => { return car._id })
         if (usercarsid.includes(req.params.id)) {
-            const index = usercarsid.findIndex(carid => { return carid.toString() === req.params.id })
+            const index = usercarsid.findIndex(car => { return car.toString() === req.params.id })
             user.cars[index].images.forEach(image => {
 
                 cloudinary.uploader.destroy(imageName(image), (result, err) => {
@@ -185,7 +185,7 @@ exports.deleteCar = async (req, res) => {
             user.cars.splice(index, 1)
             await user.save()
             await Car.deleteOne({ _id: req.params.id })
-            await Rent.deleteMany({ carid: req.params.id })
+            await Rent.deleteMany({ car: req.params.id })
             res.status(200).json({ message: 'car successfully deleted' })
             return;
         }
@@ -201,7 +201,7 @@ exports.getCarHistory = async (req, res) => {
 
     try {
 
-        const histories = await Rent.find({ $and: [{ carid: req.params.id }, { ended: true }] })
+        const histories = await Rent.find({ $and: [{ car: req.params.id }, { ended: true }] })
         res.status(200).json({ histories: histories })
     } catch (error) {
 
@@ -225,7 +225,7 @@ exports.getCarsCount = async (req, res, next) => {
 exports.updateCarPhoto = async (req, res) => {
 
     try {
-        const car = await Car.findOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] })
+        const car = await Car.findOne({ $and: [{ _id: req.params.id }, { owner: req.user._id }] })
         if (car) {
             cloudinary.uploader.destroy(req.body.oldimage, (result, err) => {
                 if (err)
@@ -234,7 +234,7 @@ exports.updateCarPhoto = async (req, res) => {
             const imageindex = car.images.findIndex(carimage => { return carimage === req.body.oldimage })
             let newImages = car.images;
             newImages[imageindex] = req.file.secure_url
-            await Car.updateOne({ $and: [{ _id: req.params.id }, { ownerid: req.user._id }] }, { $set: { images: newImages } })
+            await Car.updateOne({ $and: [{ _id: req.params.id }, { owner: req.user._id }] }, { $set: { images: newImages } })
             res.status(200).json({ message: 'car successfully updated' })
             return;
         }
@@ -254,7 +254,7 @@ exports.updateCar = async (req, res) => {
         ops[obj.propName] = obj.value
     }
     try {
-        await Car.updateOne({ $and: [{ _id: req.params.id, ownerid: req.user._id }] }, { $set: ops })
+        await Car.updateOne({ $and: [{ _id: req.params.id, owner: req.user._id }] }, { $set: ops })
         res.status(200).json({ message: 'car updated successfully' })
     } catch (error) {
 

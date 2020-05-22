@@ -16,7 +16,7 @@ const CarSchema = new mongoose.Schema({
     address: { type: String, required: true },
     addedDate: { type: Date },
     percentage: [{ type: Number }],
-    ownerid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 
 })
 CarSchema.plugin(mongoosePaginate)
