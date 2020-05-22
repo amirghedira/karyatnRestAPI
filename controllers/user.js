@@ -371,7 +371,7 @@ exports.markAsReadAllNotification = async (req, res) => {
 
     try {
 
-        const user = await User.findOne({ _id: req.user });
+        const user = await User.findOne({ _id: req.user._id });
         const newNotifications = user.notifications;
         newNotifications.forEach(notification => {
             notification.read = true;
@@ -397,7 +397,7 @@ exports.markAsReadNotification = async (req, res) => {
 
     try {
 
-        const user = await User.findOne({ _id: req.user });
+        const user = await User.findOne({ _id: req.user._id });
         const index = user.notifications.findIndex(notification => notification._id.toString() === req.params.id)
         user.notifications[index].read = true;
         await user.save()
