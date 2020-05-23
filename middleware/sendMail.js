@@ -27,7 +27,7 @@ exports.WelcomeEmail = async (mail, username, token) => {
 
 }
 
-exports.resetPasswordMail = async (mail, username, link) => {
+exports.resetPasswordMail = async (mail, username, token) => {
     const template = fs.readFileSync('./views/email/resetpassword.hjs', 'utf-8')
     const compiledTemplate = hjs.compile(template)
     try {
