@@ -64,7 +64,7 @@ Allows as to send emails from nodejs by connecting to an SMTP mailer.
 is a mongodb driver in nodejs that provides a straight-forward, schema-based solution to model your application data. It includes built-in type casting, validation, query building, business logic hooks and more, out of the box.
 You can also use mongodb driver (default) it will work too but with different syntax and methodologies
 
-[body-parse]([https://www.npmjs.com/package/body-parser](https://www.npmjs.com/package/body-parser)):
+[body-parse](https://www.npmjs.com/package/body-parser):
 Is a library , that allow the backend to parse the body and get data from the request (you can't get data from req.body without this library)
 The other packages are optional, but they provide more functionality.
 
@@ -73,7 +73,7 @@ Is a library responsible to manage tokens, it generates tokens from a payload yo
 with it, also you can protect some routes using a middleware that checks the token, you can add more options to it like the expiration time, etc... check out the docs below
 
 
-[multer-storage-cloudinary]([https://www.npmjs.com/package/multer-storage-cloudinary](https://www.npmjs.com/package/multer-storage-cloudinary))/[multer](multer:[https://www.npmjs.com/package/multer](https://www.npmjs.com/package/multer)):
+[multer-storage-cloudinary](https://www.npmjs.com/package/multer-storage-cloudinary)/[multer](https://www.npmjs.com/package/multer):
 I used both of those libraries as a middleware to store data in [cloudinary]([https://cloudinary.com](https://cloudinary.com)) which is a cloud storage (storing only images and videos)
 You can use multer by its own to store files in your local storage, that's the default use case of multer.
 
