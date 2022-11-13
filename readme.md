@@ -7,7 +7,7 @@ The main goal of this project is to build a restful API using Expressjs framewor
 To launch the project, you have to first add a `.env` file in the root directory that will hold the environment variables of the backend. You can find a `.env.example` folder as reference for the environment variables used.
 Note that you need a cloudinary account to used in the backend as storage service.
 
-After adding a `.env` file, you have to install the NodeJS packages on the backend (the project holds both the frontend under the client folder and the backend in the root directory of the project)
+After adding a `.env` file, you have to install the NodeJS packages on the backend
 
 To install the backend Node packages, simply run:
 ``` bash
