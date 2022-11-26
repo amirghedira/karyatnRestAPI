@@ -10,7 +10,7 @@ services:
     networks:
       - karyatn
     env_file: 
-      - ./server/.env.example
+      - .env
     ports:
       - "3000:3000"
 
