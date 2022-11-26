@@ -5,7 +5,7 @@ services:
     container_name: karyatn_api
     image: karyatn_api:latest
     build:
-      context: ./server
+      context: .
       dockerfile: ./Dockerfile
     networks:
       - karyatn
