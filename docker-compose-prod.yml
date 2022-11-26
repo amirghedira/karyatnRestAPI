@@ -1,0 +1,20 @@
+version: '3.3'
+services:
+  karyatn_api_prod:
+    restart: always
+    container_name: karyatn_api_prod
+    image: ${REGISTRY_IMAGE}/${IMAGE_NAME}:${VERSION}
+    networks:
+      - karyatn_prod
+    env_file: 
+      - .env
+    ports:
+      - "3000:3000"
+
+networks:
+  karyatn_prod:
+    driver: bridge
+
+
+
+    

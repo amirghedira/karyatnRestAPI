@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  karyatn_api:
+    restart: always
+    container_name: karyatn_api
+    image: karyatn_api:latest
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    networks:
+      - karyatn
+    env_file: 
+      - ./server/.env.example
+    ports:
+      - "3000:3000"
+
+networks:
+  karyatn:
+    driver: bridge
